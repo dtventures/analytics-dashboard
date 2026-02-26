@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Connect Google Analytics 4 to Your Website — AnalyticsDash</title>
-<meta name="description" content="A step-by-step guide to creating a GA4 property, installing the tracking code, and verifying data is flowing from your website to Google Analytics 4.">
+<title>How to Add Google Analytics 4 to Your Website — AnalyticsDash</title>
+<meta name="description" content="A simple step-by-step guide to setting up Google Analytics 4. Create a property, get your tracking ID, and install it in 10 minutes.">
 <link rel="canonical" href="https://analyticsdash.lighthouselaunch.com/articles/connect-google-analytics-4">
-<meta property="og:title" content="How to Connect Google Analytics 4 to Your Website">
-<meta property="og:description" content="A step-by-step guide to creating a GA4 property, installing the tracking code, and verifying data is flowing from your website to Google Analytics 4.">
+<meta property="og:title" content="How to Add Google Analytics 4 to Your Website">
+<meta property="og:description" content="A simple step-by-step guide to setting up Google Analytics 4. Create a property, get your tracking ID, and install it in 10 minutes.">
 <meta property="og:url" content="https://analyticsdash.lighthouselaunch.com/articles/connect-google-analytics-4">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="AnalyticsDash">
@@ -29,50 +29,87 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:60px;d
 .nav-logo svg{width:28px;height:28px}
 .nav-logo-text{font-size:15px;font-weight:700;color:#f8fafc}
 .nav-logo-text span{color:var(--accent)}
-.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none}
 .nav-back:hover{color:var(--text)}
 
-.article-wrap{max-width:740px;margin:0 auto;padding:100px 24px 80px}
+.article-wrap{max-width:720px;margin:0 auto;padding:100px 24px 80px}
 
 /* Hero */
 .art-meta{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
 .art-tag{background:#1e2a4a;color:#60a5fa;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
-.art-date{font-size:12px;color:var(--muted)}
-.art-read{font-size:12px;color:var(--muted)}
-h1{font-size:clamp(28px,4vw,42px);font-weight:800;color:#f8fafc;line-height:1.15;letter-spacing:-1px;margin-bottom:16px}
-.art-sub{font-size:17px;color:var(--dim);margin-bottom:40px;line-height:1.6}
-.art-divider{height:1px;background:var(--border);margin-bottom:40px}
+.art-time{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
+h1{font-size:clamp(26px,4vw,40px);font-weight:800;color:#f8fafc;line-height:1.15;letter-spacing:-1px;margin-bottom:14px}
+.art-sub{font-size:16px;color:var(--dim);margin-bottom:28px;line-height:1.6}
 
-/* Content */
-h2{font-size:22px;font-weight:700;color:#f8fafc;margin:44px 0 14px;letter-spacing:-.5px}
-h3{font-size:16px;font-weight:700;color:#f8fafc;margin:28px 0 10px}
-p{font-size:15px;color:var(--dim);margin-bottom:16px;line-height:1.75}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-ul,ol{padding-left:22px;margin-bottom:16px}
-li{font-size:15px;color:var(--dim);margin-bottom:8px;line-height:1.7}
-li strong{color:var(--text)}
-strong{color:var(--text)}
+/* Requirements */
+.requirements{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:40px;display:flex;gap:24px;flex-wrap:wrap}
+.req-col{flex:1;min-width:160px}
+.req-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px}
+.req-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);margin-bottom:6px}
+.req-item:last-child{margin-bottom:0}
+.req-check{width:18px;height:18px;border-radius:50%;background:#1a3a2a;border:1px solid #4ade8044;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green);flex-shrink:0}
 
-/* Step boxes */
-.step-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin:20px 0;display:flex;gap:16px}
-.step-n{width:32px;height:32px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px}
-.step-body h3{margin:0 0 6px;font-size:15px}
-.step-body p{margin:0;font-size:14px;color:var(--muted)}
+/* Big visual steps */
+.v-steps{display:flex;flex-direction:column}
+.v-step{display:flex;gap:20px;position:relative}
+.v-step:not(:last-child)::after{content:'';position:absolute;left:22px;top:52px;bottom:0;width:2px;background:linear-gradient(to bottom,var(--accent)33,var(--border));z-index:0}
+.v-step-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;position:relative;z-index:1}
+.v-step-num{width:46px;height:46px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 0 0 6px #6366f115}
+.v-step-content{flex:1;padding:8px 0 44px}
+.v-step-title{font-size:18px;font-weight:700;color:#f8fafc;margin-bottom:10px;line-height:1.3}
+.v-step-desc{font-size:14px;color:var(--dim);margin-bottom:12px;line-height:1.7}
+.v-step-desc:last-child{margin-bottom:0}
+
+/* Click-path indicator */
+.ui-path{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:12px 0;background:#13151f;border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.ui-path-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-right:4px;flex-shrink:0}
+.ui-crumb{font-size:12px;font-weight:600;color:#f8fafc;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 8px}
+.ui-crumb.active{background:#1e2a4a;border-color:#60a5fa44;color:var(--blue)}
+.ui-sep{font-size:12px;color:var(--muted)}
+
+/* Platform cards */
+.platform-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:16px 0}
+.platform-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px;cursor:default}
+.platform-card-head{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.platform-icon{font-size:20px}
+.platform-name{font-size:13px;font-weight:700;color:#f8fafc}
+.platform-path{font-size:11px;color:var(--muted);line-height:1.5}
+
+/* Code */
+code{background:#252840;border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:12px;font-family:'SF Mono','Fira Code',monospace;color:var(--blue)}
+.code-block{background:#13151f;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin:12px 0;overflow-x:auto}
+.code-block-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.code-block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted)}
+.code-block code{background:none;border:none;padding:0;font-size:12px;color:#a5b4fc;display:block;white-space:pre;line-height:1.7}
 
 /* Callouts */
-.callout{border-radius:10px;padding:16px 18px;margin:24px 0;font-size:14px;line-height:1.65;display:flex;gap:12px}
-.callout.tip{background:#1a3a2a33;border:1px solid #4ade8033}
-.callout.warn{background:#78350f22;border:1px solid #fbbf2433}
-.callout.info{background:#1e3a5f33;border:1px solid #60a5fa33}
-.callout-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.callout{border-radius:10px;padding:14px 16px;margin:16px 0;font-size:13px;line-height:1.65;display:flex;gap:10px;align-items:flex-start}
+.callout.tip{background:#1a3a2a22;border:1px solid #4ade8033}
+.callout.warn{background:#78350f18;border:1px solid #fbbf2433}
+.callout.info{background:#1e3a5f22;border:1px solid #60a5fa33}
+.callout-icon{font-size:16px;flex-shrink:0;margin-top:1px}
 .callout-text{color:var(--dim)}
 .callout-text strong{color:var(--text)}
 
-/* Code */
-code{background:#252840;border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:13px;font-family:'SF Mono','Fira Code',monospace;color:var(--blue)}
-.code-block{background:#13151f;border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin:16px 0;overflow-x:auto}
-.code-block code{background:none;border:none;padding:0;font-size:13px;color:#a5b4fc;display:block;white-space:pre}
+/* Inline note */
+.note{font-size:12px;color:var(--muted);font-style:italic;margin-top:6px}
+
+/* Measurement ID visual */
+.measurement-id{background:#13151f;border:1px solid #6366f144;border-radius:10px;padding:16px 20px;margin:14px 0;display:flex;align-items:center;gap:16px}
+.measurement-id-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent);margin-bottom:4px}
+.measurement-id-value{font-size:22px;font-weight:800;color:#f8fafc;font-family:'SF Mono','Fira Code',monospace;letter-spacing:2px}
+.measurement-id-desc{font-size:12px;color:var(--muted);margin-top:3px}
+.measurement-id-icon{font-size:28px;flex-shrink:0}
+
+/* Success block */
+.success-block{background:#1a3a2a;border:1px solid #4ade8044;border-radius:14px;padding:24px;margin:16px 0;display:flex;gap:16px;align-items:flex-start}
+.success-icon{width:40px;height:40px;border-radius:50%;background:#4ade8022;border:2px solid #4ade8066;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;margin-top:2px}
+.success-title{font-size:16px;font-weight:700;color:var(--green);margin-bottom:5px}
+.success-desc{font-size:13px;color:#86efac;line-height:1.6}
+
+/* Section divider */
+.section-divider{height:1px;background:var(--border);margin:48px 0 40px}
+.section-h{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:16px}
 
 /* CTA */
 .art-cta{background:linear-gradient(135deg,#1a1d2e,#1e2235);border:1px solid var(--border);border-radius:14px;padding:32px;text-align:center;margin:48px 0 0}
@@ -83,19 +120,24 @@ code{background:#252840;border:1px solid var(--border);border-radius:5px;padding
 
 /* Related */
 .related{margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
-.related h3{font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
-.related-link{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s}
+.related-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:12px}
+.related-link{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s}
 .related-link:hover{border-color:var(--accent);text-decoration:none}
 .related-link-text{font-size:14px;font-weight:600;color:#f8fafc}
 .related-link-sub{font-size:12px;color:var(--muted);margin-top:2px}
 
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
 footer{border-top:1px solid var(--border);padding:24px 48px;text-align:center;font-size:12px;color:var(--muted)}
 footer a{color:var(--accent)}
 
-@media(max-width:600px){
+@media(max-width:640px){
   nav,footer{padding:0 20px}
   .article-wrap{padding:90px 20px 60px}
-  .step-box{flex-direction:column;gap:10px}
+  .platform-grid{grid-template-columns:1fr 1fr}
+  .requirements{flex-direction:column;gap:12px}
+  .ui-path{flex-wrap:wrap}
 }
 </style>
 </head>
@@ -118,161 +160,194 @@ footer a{color:var(--accent)}
 
   <div class="art-meta">
     <span class="art-tag">📊 Google Analytics</span>
-    <span class="art-date">Setup Guide</span>
-    <span class="art-read">· 6 min read</span>
+    <span class="art-time">⏱ About 10 minutes</span>
   </div>
 
-  <h1>How to Connect Google Analytics 4 to Your Website</h1>
-  <p class="art-sub">Google Analytics 4 is the current generation of Google's free web analytics platform. It replaced Universal Analytics in 2023. Here's how to create a GA4 property and add the tracking code to your site so you can start measuring real visitor data.</p>
-  <div class="art-divider"></div>
+  <h1>How to Add Google Analytics 4 to Your Website</h1>
+  <p class="art-sub">GA4 is Google's free tool for tracking who visits your site, where they come from, and what they do. Follow these steps to get it set up.</p>
 
-  <h2>What is Google Analytics 4?</h2>
-  <p>GA4 is Google's free analytics platform that measures what visitors do on your website. Once installed, you can see:</p>
-  <ul>
-    <li><strong>Sessions and users</strong> — how many people visit and how often they come back</li>
-    <li><strong>Traffic sources</strong> — where visitors come from (Google, social, direct, referrals)</li>
-    <li><strong>Top pages</strong> — which pages get the most views and keep people engaged longest</li>
-    <li><strong>Audience data</strong> — device types, countries, new vs. returning visitors</li>
-    <li><strong>Events and conversions</strong> — button clicks, form submissions, purchases</li>
-    <li><strong>Realtime data</strong> — who's on your site right now</li>
-  </ul>
-
-  <div class="callout tip">
-    <div class="callout-icon">💡</div>
-    <div class="callout-text"><strong>Completely free.</strong> Google Analytics 4 is free for all websites. There's also a paid version (GA4 360) for enterprise, but the free tier is what everyone uses and it's more than enough for most sites.</div>
-  </div>
-
-  <div class="callout warn">
-    <div class="callout-icon">⚠️</div>
-    <div class="callout-text"><strong>Universal Analytics is gone.</strong> If you still have the old UA tracking code (starting with <code>UA-</code>) on your site, it stopped collecting data in July 2023. You need GA4 (which uses a <code>G-</code> Measurement ID) to get current data.</div>
-  </div>
-
-  <h2>Step-by-Step Setup</h2>
-
-  <div class="step-box">
-    <div class="step-n">1</div>
-    <div class="step-body">
-      <h3>Go to Google Analytics</h3>
-      <p>Visit <a href="https://analytics.google.com" target="_blank">analytics.google.com</a> and sign in with your Google account. Use the same account you want to use for AnalyticsDash.</p>
+  <div class="requirements">
+    <div class="req-col">
+      <div class="req-label">You'll need</div>
+      <div class="req-item"><span class="req-check">✓</span>A Google account</div>
+      <div class="req-item"><span class="req-check">✓</span>Your website URL</div>
+      <div class="req-item"><span class="req-check">✓</span>Ability to edit your site</div>
+    </div>
+    <div class="req-col">
+      <div class="req-label">Time breakdown</div>
+      <div class="req-item"><span class="req-check">✓</span>Setup in GA4: ~5 min</div>
+      <div class="req-item"><span class="req-check">✓</span>Adding code: ~5 min</div>
+      <div class="req-item"><span class="req-check">✓</span>First data: 24–48 hrs</div>
     </div>
   </div>
 
-  <div class="step-box">
-    <div class="step-n">2</div>
-    <div class="step-body">
-      <h3>Create a New Account (if needed)</h3>
-      <p>If this is your first time, click <strong>"Start measuring"</strong>. If you already have an Analytics account, click the gear icon (Admin) in the bottom left, then click <strong>"Create"</strong> → <strong>"Account"</strong>.</p>
+  <div class="v-steps">
+
+    <!-- Step 1 -->
+    <div class="v-step">
+      <div class="v-step-left">
+        <div class="v-step-num">1</div>
+      </div>
+      <div class="v-step-content">
+        <div class="v-step-title">Open Google Analytics</div>
+        <p class="v-step-desc">Go to <a href="https://analytics.google.com" target="_blank">analytics.google.com</a> and sign in. Use the same Google account you want to use for AnalyticsDash.</p>
+        <div class="callout info">
+          <div class="callout-icon">ℹ️</div>
+          <div class="callout-text"><strong>First time here?</strong> You'll see a "Start measuring" button. Click it to begin. If you already have an account, skip to step 2.</div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <p>Give your account a name — usually your business or organization name, e.g. <code>Lighthouse Launch</code>. You can have multiple properties under one account, so name the account broadly.</p>
-
-  <div class="step-box">
-    <div class="step-n">3</div>
-    <div class="step-body">
-      <h3>Create a GA4 Property</h3>
-      <p>A "property" in GA4 represents one website (or app). Give it a descriptive name like <code>lighthouselaunch.com</code>, select your reporting time zone and currency, then click <strong>Next</strong>.</p>
+    <!-- Step 2 -->
+    <div class="v-step">
+      <div class="v-step-left">
+        <div class="v-step-num">2</div>
+      </div>
+      <div class="v-step-content">
+        <div class="v-step-title">Create a Property</div>
+        <p class="v-step-desc">If you're starting fresh, GA4 walks you through account creation automatically. If you already have a GA4 account, click the gear icon and navigate here:</p>
+        <div class="ui-path">
+          <span class="ui-path-label">Click path</span>
+          <span class="ui-crumb">⚙️ Admin</span>
+          <span class="ui-sep">→</span>
+          <span class="ui-crumb">Create</span>
+          <span class="ui-sep">→</span>
+          <span class="ui-crumb active">Property</span>
+        </div>
+        <p class="v-step-desc">Name the property after your domain (e.g. <code>lighthouselaunch.com</code>). Set your time zone and currency, then click <strong>Next</strong>.</p>
+      </div>
     </div>
-  </div>
 
-  <p>You'll be asked about your business. Fill in your industry and business size — these only affect Google's default report recommendations, not the data you collect.</p>
-
-  <div class="step-box">
-    <div class="step-n">4</div>
-    <div class="step-body">
-      <h3>Set Up a Data Stream</h3>
-      <p>A data stream is the source of data into your property. For a website, choose <strong>"Web"</strong>. Enter your website URL and give the stream a name.</p>
+    <!-- Step 3 -->
+    <div class="v-step">
+      <div class="v-step-left">
+        <div class="v-step-num">3</div>
+      </div>
+      <div class="v-step-content">
+        <div class="v-step-title">Add a Web Data Stream</div>
+        <p class="v-step-desc">After creating the property, choose <strong>Web</strong> as your platform. Enter your website URL and click <strong>Create stream</strong>.</p>
+        <div class="ui-path">
+          <span class="ui-path-label">Pick platform</span>
+          <span class="ui-crumb active">🌐 Web</span>
+          <span class="ui-sep">or</span>
+          <span class="ui-crumb">📱 iOS app</span>
+          <span class="ui-sep">or</span>
+          <span class="ui-crumb">🤖 Android app</span>
+        </div>
+        <p class="v-step-desc">After saving, you'll see the stream details. Find and copy your <strong>Measurement ID</strong> — you'll need it in the next step.</p>
+        <div class="measurement-id">
+          <div class="measurement-id-icon">🔑</div>
+          <div>
+            <div class="measurement-id-label">Your Measurement ID looks like this</div>
+            <div class="measurement-id-value">G-XXXXXXXXXX</div>
+            <div class="measurement-id-desc">Copy this — paste it into your site in the next step</div>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <p>Make sure to enter your actual domain, e.g. <code>https://lighthouselaunch.com</code>. After saving, you'll land on the stream details page — this is where your <strong>Measurement ID</strong> lives (it looks like <code>G-XXXXXXXXXX</code>). Keep this page open — you'll need this ID in the next step.</p>
+    <!-- Step 4 -->
+    <div class="v-step">
+      <div class="v-step-left">
+        <div class="v-step-num">4</div>
+      </div>
+      <div class="v-step-content">
+        <div class="v-step-title">Add the Tracking Code to Your Site</div>
+        <p class="v-step-desc">How you install it depends on your website platform. Find yours below:</p>
 
-  <div class="callout info">
-    <div class="callout-icon">ℹ️</div>
-    <div class="callout-text"><strong>Enhanced measurement is on by default.</strong> GA4 automatically tracks page views, scrolls, outbound clicks, site search, video engagement, and file downloads without any extra code. You can toggle these off per-stream if needed.</div>
-  </div>
+        <div class="platform-grid">
+          <div class="platform-card">
+            <div class="platform-card-head">
+              <span class="platform-icon">🔌</span>
+              <span class="platform-name">WordPress</span>
+            </div>
+            <div class="platform-path">Install the <strong>Google Site Kit</strong> plugin → connects GA4 in one click</div>
+          </div>
+          <div class="platform-card">
+            <div class="platform-card-head">
+              <span class="platform-icon">🌊</span>
+              <span class="platform-name">Webflow</span>
+            </div>
+            <div class="platform-path">Site Settings → Integrations → Google Analytics → paste Measurement ID</div>
+          </div>
+          <div class="platform-card">
+            <div class="platform-card-head">
+              <span class="platform-icon">🛍️</span>
+              <span class="platform-name">Shopify</span>
+            </div>
+            <div class="platform-path">Online Store → Preferences → Google Analytics → Connect account</div>
+          </div>
+          <div class="platform-card">
+            <div class="platform-card-head">
+              <span class="platform-icon">⬛</span>
+              <span class="platform-name">Squarespace</span>
+            </div>
+            <div class="platform-path">Settings → Advanced → External API Keys → paste Measurement ID</div>
+          </div>
+          <div class="platform-card">
+            <div class="platform-card-head">
+              <span class="platform-icon">🌀</span>
+              <span class="platform-name">Wix</span>
+            </div>
+            <div class="platform-path">Marketing & SEO → Marketing Integrations → Google Analytics</div>
+          </div>
+          <div class="platform-card">
+            <div class="platform-card-head">
+              <span class="platform-icon">💻</span>
+              <span class="platform-name">Custom HTML</span>
+            </div>
+            <div class="platform-path">Paste the snippet into the <code>&lt;head&gt;</code> of every page</div>
+          </div>
+        </div>
 
-  <div class="step-box">
-    <div class="step-n">5</div>
-    <div class="step-body">
-      <h3>Install the Tracking Code</h3>
-      <p>You need to add the Google tag to every page of your website. The method depends on how your site is built.</p>
-    </div>
-  </div>
-
-  <h3>Method 1 — Direct HTML (recommended for custom sites)</h3>
-  <p>Copy this snippet and paste it into the <code>&lt;head&gt;</code> section of every HTML page on your site. Replace <code>G-XXXXXXXXXX</code> with your actual Measurement ID:</p>
-  <div class="code-block"><code>&lt;!-- Google tag (gtag.js) --&gt;
-&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"&gt;&lt;/script&gt;
+        <p class="note" style="margin-top:4px">For custom HTML sites, paste this snippet before the closing <code>&lt;/head&gt;</code> tag on every page:</p>
+        <div class="code-block">
+          <div class="code-block-header"><span class="code-block-label">Paste into &lt;head&gt; on every page</span></div>
+          <code>&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"&gt;&lt;/script&gt;
 &lt;script&gt;
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', 'G-XXXXXXXXXX');
-&lt;/script&gt;</code></div>
-
-  <h3>Method 2 — Google Tag Manager (GTM)</h3>
-  <p>If you use Google Tag Manager, create a new tag of type <strong>Google Tag</strong>, enter your Measurement ID, set the trigger to <strong>All Pages</strong>, and publish. This is the preferred method for sites that already have GTM installed.</p>
-
-  <h3>Method 3 — CMS plugins</h3>
-  <ul>
-    <li><strong>WordPress:</strong> Use the <a href="https://wordpress.org/plugins/site-kit/" target="_blank">Google Site Kit plugin</a> — it installs GA4 with one click and also connects Search Console.</li>
-    <li><strong>Webflow:</strong> Site Settings → Integrations → Google Analytics → paste your Measurement ID.</li>
-    <li><strong>Squarespace:</strong> Settings → Advanced → External API Keys → paste your Measurement ID.</li>
-    <li><strong>Shopify:</strong> Online Store → Preferences → Google Analytics → connect your account.</li>
-    <li><strong>Wix:</strong> Marketing & SEO → Marketing Integrations → Google Analytics → connect.</li>
-  </ul>
-
-  <div class="step-box">
-    <div class="step-n">6</div>
-    <div class="step-body">
-      <h3>Verify It's Working</h3>
-      <p>Open Google Analytics, go to <strong>Reports → Realtime</strong>. Then open your website in a new tab. Within 30–60 seconds you should see yourself appear as an active user.</p>
+&lt;/script&gt;</code>
+        </div>
+        <p class="note">Replace both instances of <code>G-XXXXXXXXXX</code> with your actual Measurement ID.</p>
+      </div>
     </div>
-  </div>
 
-  <div class="callout tip">
-    <div class="callout-icon">💡</div>
-    <div class="callout-text"><strong>Nothing showing?</strong> If you don't appear in realtime, check that: (1) the tag is actually in your page source — right-click → View Page Source and search for <code>gtag</code>, (2) you don't have an ad blocker active (they block GA), (3) you deployed the change (some site builders need you to publish after editing).</div>
-  </div>
+    <!-- Step 5 -->
+    <div class="v-step">
+      <div class="v-step-left">
+        <div class="v-step-num">5</div>
+      </div>
+      <div class="v-step-content">
+        <div class="v-step-title">Check It's Working</div>
+        <p class="v-step-desc">Open GA4 and go to the Realtime report. Then open your website in a new browser tab. Within 60 seconds, you should appear as an active user.</p>
+        <div class="ui-path">
+          <span class="ui-path-label">In GA4</span>
+          <span class="ui-crumb">Reports</span>
+          <span class="ui-sep">→</span>
+          <span class="ui-crumb active">Realtime</span>
+        </div>
+        <div class="success-block">
+          <div class="success-icon">✓</div>
+          <div>
+            <div class="success-title">You're all set!</div>
+            <div class="success-desc">You'll see yourself appear in Realtime within a minute. Standard reports (traffic, channels, audience) take 24–48 hours to populate with data.</div>
+          </div>
+        </div>
+        <div class="callout warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-text"><strong>Not showing up?</strong> Turn off any ad blocker — they block GA4 tracking. Also make sure you actually published/deployed the code change.</div>
+        </div>
+      </div>
+    </div>
 
-  <h2>Understanding GA4 Key Concepts</h2>
-  <p>GA4 works differently from the old Universal Analytics. A few things worth knowing:</p>
-
-  <ul>
-    <li><strong>Everything is an event.</strong> Page views, clicks, scrolls — all tracked as events. This is more flexible but takes some getting used to.</li>
-    <li><strong>Sessions work differently.</strong> GA4 uses engagement-based sessions. "Bounce rate" in GA4 is the inverse of engagement rate — a bounce is a session with less than 10 seconds of engagement, no conversion, and no second page view.</li>
-    <li><strong>Conversions are events marked as key events.</strong> Go to Admin → Events, find any event (like <code>purchase</code> or <code>form_submit</code>), and toggle "Mark as conversion" to start counting it.</li>
-    <li><strong>Data takes 24–48 hours to appear in most reports.</strong> Realtime is instant. Standard reports show data from yesterday and earlier.</li>
-    <li><strong>Audiences and explorations are powerful.</strong> Use Explore → Funnel Exploration or Segment Overlap for custom analysis beyond standard reports.</li>
-  </ul>
-
-  <h2>Setting Up Conversions (Optional but Important)</h2>
-  <p>If you have goals — contact form submissions, newsletter signups, purchases — you should mark them as conversions. GA4 auto-tracks some events; others need manual setup.</p>
-
-  <h3>Automatic events (tracked by default)</h3>
-  <ul>
-    <li><code>purchase</code> — for e-commerce with enhanced e-commerce set up</li>
-    <li><code>first_visit</code> — new visitor to your site</li>
-    <li><code>session_start</code> — start of every session</li>
-  </ul>
-
-  <h3>Track contact form submissions</h3>
-  <p>Add a small snippet to your form's success handler:</p>
-  <div class="code-block"><code>gtag('event', 'form_submit', {
-  'event_category': 'Contact',
-  'event_label': 'Contact Form'
-});</code></div>
-  <p>Then in GA4: Admin → Events → find <code>form_submit</code> → toggle "Mark as key event".</p>
-
-  <div class="callout info">
-    <div class="callout-icon">ℹ️</div>
-    <div class="callout-text"><strong>Thank-you page method.</strong> If your form redirects to a thank-you page (e.g. <code>/thank-you</code>), you can create a conversion by going to Admin → Conversions → New conversion event and entering the event name that fires on that page. This is often simpler than adding custom JavaScript.</div>
-  </div>
+  </div><!-- end v-steps -->
 
   <div class="art-cta">
     <h3>See your GA4 data in AnalyticsDash</h3>
-    <p>Once GA4 is installed, connect it to AnalyticsDash for a cleaner view — real-time visitors, traffic channels, top pages, audience breakdowns, and smart insights alongside your Search Console data.</p>
+    <p>Once GA4 is installed, connect it here for real-time traffic, channel breakdown, top pages, and smart insights — all in one dashboard.</p>
     <a class="btn-primary" href="/auth/login">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Sign in with Google — it's free
@@ -280,12 +355,12 @@ footer a{color:var(--accent)}
   </div>
 
   <div class="related">
-    <h3>Related Guides</h3>
+    <div class="related-label">Also useful</div>
     <a class="related-link" href="/articles/connect-google-search-console">
-      <span style="font-size:22px">🔎</span>
+      <span style="font-size:24px">🔎</span>
       <div>
-        <div class="related-link-text">How to Connect Google Search Console to Your Website</div>
-        <div class="related-link-sub">Verify ownership, submit your sitemap, and track keyword rankings</div>
+        <div class="related-link-text">How to Add Your Site to Google Search Console</div>
+        <div class="related-link-sub">Track keyword rankings, impressions, and crawl errors</div>
       </div>
     </a>
   </div>

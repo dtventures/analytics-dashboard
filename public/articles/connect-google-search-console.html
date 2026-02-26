@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Connect Google Search Console to Your Website — AnalyticsDash</title>
-<meta name="description" content="A step-by-step guide to adding your website to Google Search Console, verifying ownership, and submitting your sitemap to get indexed on Google.">
+<title>How to Add Your Site to Google Search Console — AnalyticsDash</title>
+<meta name="description" content="A simple step-by-step guide to adding your website to Google Search Console, verifying ownership, and submitting your sitemap.">
 <link rel="canonical" href="https://analyticsdash.lighthouselaunch.com/articles/connect-google-search-console">
-<meta property="og:title" content="How to Connect Google Search Console to Your Website">
-<meta property="og:description" content="A step-by-step guide to adding your website to Google Search Console, verifying ownership, and submitting your sitemap.">
+<meta property="og:title" content="How to Add Your Site to Google Search Console">
+<meta property="og:description" content="A simple step-by-step guide to adding your website to Google Search Console, verifying ownership, and submitting your sitemap.">
 <meta property="og:url" content="https://analyticsdash.lighthouselaunch.com/articles/connect-google-search-console">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="AnalyticsDash">
@@ -29,54 +29,97 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:60px;d
 .nav-logo svg{width:28px;height:28px}
 .nav-logo-text{font-size:15px;font-weight:700;color:#f8fafc}
 .nav-logo-text span{color:var(--accent)}
-.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none}
 .nav-back:hover{color:var(--text)}
 
-.article-wrap{max-width:740px;margin:0 auto;padding:100px 24px 80px}
+.article-wrap{max-width:720px;margin:0 auto;padding:100px 24px 80px}
 
 /* Hero */
 .art-meta{display:flex;align-items:center;gap:10px;margin-bottom:20px;flex-wrap:wrap}
 .art-tag{background:#1a3a2a;color:#4ade80;font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.5px}
-.art-date{font-size:12px;color:var(--muted)}
-.art-read{font-size:12px;color:var(--muted)}
-h1{font-size:clamp(28px,4vw,42px);font-weight:800;color:#f8fafc;line-height:1.15;letter-spacing:-1px;margin-bottom:16px}
-.art-sub{font-size:17px;color:var(--dim);margin-bottom:40px;line-height:1.6}
-.art-divider{height:1px;background:var(--border);margin-bottom:40px}
+.art-time{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px}
+h1{font-size:clamp(26px,4vw,40px);font-weight:800;color:#f8fafc;line-height:1.15;letter-spacing:-1px;margin-bottom:14px}
+.art-sub{font-size:16px;color:var(--dim);margin-bottom:28px;line-height:1.6}
 
-/* Content */
-h2{font-size:22px;font-weight:700;color:#f8fafc;margin:44px 0 14px;letter-spacing:-.5px}
-h3{font-size:16px;font-weight:700;color:#f8fafc;margin:28px 0 10px}
-p{font-size:15px;color:var(--dim);margin-bottom:16px;line-height:1.75}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-ul,ol{padding-left:22px;margin-bottom:16px}
-li{font-size:15px;color:var(--dim);margin-bottom:8px;line-height:1.7}
-li strong{color:var(--text)}
-strong{color:var(--text)}
+/* Requirements */
+.requirements{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 22px;margin-bottom:40px;display:flex;gap:24px;flex-wrap:wrap}
+.req-col{flex:1;min-width:160px}
+.req-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:10px}
+.req-item{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--dim);margin-bottom:6px}
+.req-item:last-child{margin-bottom:0}
+.req-check{width:18px;height:18px;border-radius:50%;background:#1a3a2a;border:1px solid #4ade8044;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--green);flex-shrink:0}
 
-/* Step boxes */
-.step-box{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:20px 22px;margin:20px 0;display:flex;gap:16px}
-.step-n{width:32px;height:32px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;flex-shrink:0;margin-top:2px}
-.step-body h3{margin:0 0 6px;font-size:15px}
-.step-body p{margin:0;font-size:14px;color:var(--muted)}
+/* Big visual steps */
+.v-steps{display:flex;flex-direction:column}
+.v-step{display:flex;gap:20px;position:relative}
+.v-step:not(:last-child)::after{content:'';position:absolute;left:22px;top:52px;bottom:0;width:2px;background:linear-gradient(to bottom,#4ade8033,var(--border));z-index:0}
+.v-step-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;position:relative;z-index:1}
+.v-step-num{width:46px;height:46px;border-radius:50%;background:#1a3a2a;border:2px solid #4ade8055;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:800;color:var(--green);flex-shrink:0}
+.v-step-content{flex:1;padding:8px 0 44px}
+.v-step-title{font-size:18px;font-weight:700;color:#f8fafc;margin-bottom:10px;line-height:1.3}
+.v-step-desc{font-size:14px;color:var(--dim);margin-bottom:12px;line-height:1.7}
+.v-step-desc:last-child{margin-bottom:0}
+
+/* Click-path indicator */
+.ui-path{display:flex;align-items:center;flex-wrap:wrap;gap:4px;margin:12px 0;background:#13151f;border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.ui-path-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-right:4px;flex-shrink:0}
+.ui-crumb{font-size:12px;font-weight:600;color:#f8fafc;background:var(--surface);border:1px solid var(--border);border-radius:5px;padding:2px 8px}
+.ui-crumb.active{background:#1a3a2a;border-color:#4ade8044;color:var(--green)}
+.ui-sep{font-size:12px;color:var(--muted)}
+
+/* Property type cards */
+.property-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:14px 0}
+.property-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px}
+.property-card.recommended{border-color:#4ade8044;background:#1a3a2a18}
+.property-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 7px;border-radius:20px;display:inline-block;margin-bottom:8px}
+.property-badge.rec{background:#1a3a2a;color:var(--green)}
+.property-badge.alt{background:var(--subtle);color:var(--muted)}
+.property-title{font-size:14px;font-weight:700;color:#f8fafc;margin-bottom:5px}
+.property-desc{font-size:12px;color:var(--muted);line-height:1.5}
+.property-eg{font-size:12px;color:var(--dim);margin-top:6px}
+
+/* Verification method cards */
+.verify-cards{display:flex;flex-direction:column;gap:10px;margin:14px 0}
+.verify-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:flex-start}
+.verify-icon{font-size:22px;flex-shrink:0;margin-top:1px}
+.verify-title{font-size:14px;font-weight:700;color:#f8fafc;margin-bottom:3px}
+.verify-desc{font-size:13px;color:var(--muted);line-height:1.5}
+.verify-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 7px;border-radius:20px;display:inline-block;margin-top:5px}
+.verify-tag.easy{background:#1e3a5f;color:var(--blue)}
+.verify-tag.any{background:#3a1a5f22;border:1px solid #c084fc33;color:#c084fc}
+
+/* Code */
+code{background:#252840;border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:12px;font-family:'SF Mono','Fira Code',monospace;color:var(--blue)}
+.code-block{background:#13151f;border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin:12px 0;overflow-x:auto}
+.code-block-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin-bottom:8px}
+.code-block code{background:none;border:none;padding:0;font-size:12px;color:#a5b4fc;display:block;white-space:pre;line-height:1.7}
 
 /* Callouts */
-.callout{border-radius:10px;padding:16px 18px;margin:24px 0;font-size:14px;line-height:1.65;display:flex;gap:12px}
-.callout.tip{background:#1a3a2a33;border:1px solid #4ade8033}
-.callout.warn{background:#78350f22;border:1px solid #fbbf2433}
-.callout.info{background:#1e3a5f33;border:1px solid #60a5fa33}
-.callout-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.callout{border-radius:10px;padding:14px 16px;margin:14px 0;font-size:13px;line-height:1.65;display:flex;gap:10px;align-items:flex-start}
+.callout.tip{background:#1a3a2a22;border:1px solid #4ade8033}
+.callout.warn{background:#78350f18;border:1px solid #fbbf2433}
+.callout.info{background:#1e3a5f22;border:1px solid #60a5fa33}
+.callout-icon{font-size:16px;flex-shrink:0;margin-top:1px}
 .callout-text{color:var(--dim)}
 .callout-text strong{color:var(--text)}
 
-/* Code */
-code{background:#252840;border:1px solid var(--border);border-radius:5px;padding:2px 7px;font-size:13px;font-family:'SF Mono','Fira Code',monospace;color:var(--blue)}
-.code-block{background:#13151f;border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin:16px 0;overflow-x:auto}
-.code-block code{background:none;border:none;padding:0;font-size:13px;color:#a5b4fc;display:block;white-space:pre}
+/* Sitemap URL tries */
+.sitemap-urls{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+.sitemap-url{display:flex;align-items:center;gap:10px;background:#13151f;border:1px solid var(--border);border-radius:8px;padding:10px 14px}
+.sitemap-url-num{font-size:11px;font-weight:700;color:var(--muted);width:20px;flex-shrink:0}
+.sitemap-url code{background:none;border:none;padding:0;font-size:13px;color:#a5b4fc}
+.sitemap-url-note{font-size:11px;color:var(--muted);margin-left:auto;flex-shrink:0}
 
-/* Image placeholder */
-.img-ph{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:32px;text-align:center;margin:24px 0;color:var(--muted);font-size:13px}
-.img-ph-icon{font-size:32px;margin-bottom:8px}
+/* Success block */
+.success-block{background:#1a3a2a;border:1px solid #4ade8044;border-radius:14px;padding:24px;margin:16px 0;display:flex;gap:16px;align-items:flex-start}
+.success-icon{width:40px;height:40px;border-radius:50%;background:#4ade8022;border:2px solid #4ade8066;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;margin-top:2px}
+.success-title{font-size:16px;font-weight:700;color:var(--green);margin-bottom:5px}
+.success-desc{font-size:13px;color:#86efac;line-height:1.6}
+
+.note{font-size:12px;color:var(--muted);font-style:italic;margin-top:6px}
+
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
 
 /* CTA */
 .art-cta{background:linear-gradient(135deg,#1a1d2e,#1e2235);border:1px solid var(--border);border-radius:14px;padding:32px;text-align:center;margin:48px 0 0}
@@ -87,8 +130,8 @@ code{background:#252840;border:1px solid var(--border);border-radius:5px;padding
 
 /* Related */
 .related{margin-top:48px;padding-top:32px;border-top:1px solid var(--border)}
-.related h3{font-size:14px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:14px}
-.related-link{display:flex;align-items:center;gap:10px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s}
+.related-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:12px}
+.related-link{display:flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px;text-decoration:none;transition:border-color .15s}
 .related-link:hover{border-color:var(--accent);text-decoration:none}
 .related-link-text{font-size:14px;font-weight:600;color:#f8fafc}
 .related-link-sub{font-size:12px;color:var(--muted);margin-top:2px}
@@ -96,10 +139,12 @@ code{background:#252840;border:1px solid var(--border);border-radius:5px;padding
 footer{border-top:1px solid var(--border);padding:24px 48px;text-align:center;font-size:12px;color:var(--muted)}
 footer a{color:var(--accent)}
 
-@media(max-width:600px){
+@media(max-width:640px){
   nav,footer{padding:0 20px}
   .article-wrap{padding:90px 20px 60px}
-  .step-box{flex-direction:column;gap:10px}
+  .property-cards{grid-template-columns:1fr}
+  .requirements{flex-direction:column;gap:12px}
+  .sitemap-url-note{display:none}
 }
 </style>
 </head>
@@ -122,131 +167,173 @@ footer a{color:var(--accent)}
 
   <div class="art-meta">
     <span class="art-tag">🔎 Search Console</span>
-    <span class="art-date">Setup Guide</span>
-    <span class="art-read">· 5 min read</span>
+    <span class="art-time">⏱ About 10 minutes</span>
   </div>
 
-  <h1>How to Connect Google Search Console to Your Website</h1>
-  <p class="art-sub">Google Search Console is a free tool that shows you how Google sees your site — what keywords you rank for, how many impressions you get, and any crawl issues. Here's how to set it up from scratch.</p>
-  <div class="art-divider"></div>
+  <h1>How to Add Your Site to Google Search Console</h1>
+  <p class="art-sub">Search Console is Google's free tool that shows you which keywords people search to find your site, how often you appear in results, and any issues Google found. Here's how to set it up.</p>
 
-  <h2>What is Google Search Console?</h2>
-  <p>Google Search Console (GSC) lets you monitor your website's presence in Google Search results. Once connected, you can see:</p>
-  <ul>
-    <li><strong>Which keywords bring people to your site</strong> — and your average ranking position for each</li>
-    <li><strong>Impressions and clicks</strong> — how often your pages appear in search and how many people click</li>
-    <li><strong>Index coverage</strong> — which pages Google has indexed and which have errors</li>
-    <li><strong>Core Web Vitals</strong> — page experience signals that affect your rankings</li>
-    <li><strong>Manual actions and security issues</strong> — Google's way of flagging serious problems</li>
-  </ul>
-
-  <div class="callout tip">
-    <div class="callout-icon">💡</div>
-    <div class="callout-text"><strong>Free forever.</strong> Google Search Console has no paid tier — all data is free. You just need a Google account and to prove you own the site.</div>
-  </div>
-
-  <h2>Step-by-Step Setup</h2>
-
-  <div class="step-box">
-    <div class="step-n">1</div>
-    <div class="step-body">
-      <h3>Go to Google Search Console</h3>
-      <p>Visit <a href="https://search.google.com/search-console" target="_blank">search.google.com/search-console</a> and sign in with your Google account. Use the same account you use for Google Analytics if you have it.</p>
+  <div class="requirements">
+    <div class="req-col">
+      <div class="req-label">You'll need</div>
+      <div class="req-item"><span class="req-check">✓</span>A Google account</div>
+      <div class="req-item"><span class="req-check">✓</span>Your website URL</div>
+      <div class="req-item"><span class="req-check">✓</span>Access to your DNS or site HTML</div>
+    </div>
+    <div class="req-col">
+      <div class="req-label">What you'll get</div>
+      <div class="req-item"><span class="req-check">✓</span>Keyword rankings & clicks</div>
+      <div class="req-item"><span class="req-check">✓</span>Impressions & CTR data</div>
+      <div class="req-item"><span class="req-check">✓</span>Crawl errors & coverage</div>
     </div>
   </div>
 
-  <div class="step-box">
-    <div class="step-n">2</div>
-    <div class="step-body">
-      <h3>Add a Property</h3>
-      <p>Click <strong>"Add property"</strong> in the top left. You'll see two options — choose the one that fits your setup:</p>
+  <div class="v-steps">
+
+    <!-- Step 1 -->
+    <div class="v-step">
+      <div class="v-step-left">
+        <div class="v-step-num">1</div>
+      </div>
+      <div class="v-step-content">
+        <div class="v-step-title">Open Google Search Console</div>
+        <p class="v-step-desc">Go to <a href="https://search.google.com/search-console" target="_blank">search.google.com/search-console</a> and sign in. Use the same Google account you use for Google Analytics (if you have it).</p>
+        <div class="callout tip">
+          <div class="callout-icon">💡</div>
+          <div class="callout-text"><strong>Completely free.</strong> Search Console has no paid tier — all data is always free.</div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <h3>Option A — Domain property (recommended)</h3>
-  <p>Covers your entire domain including all subdomains (<code>www</code>, <code>blog</code>, etc.) and both HTTP and HTTPS. Enter just your domain name, e.g. <code>lighthouselaunch.com</code>.</p>
-  <p>This requires adding a <strong>DNS TXT record</strong> to verify ownership — your domain registrar (GoDaddy, Namecheap, etc.) is where you do this.</p>
+    <!-- Step 2 -->
+    <div class="v-step">
+      <div class="v-step-left">
+        <div class="v-step-num">2</div>
+      </div>
+      <div class="v-step-content">
+        <div class="v-step-title">Add Your Site as a Property</div>
+        <p class="v-step-desc">Click <strong>Add property</strong> in the top left dropdown. You'll choose between two types:</p>
 
-  <h3>Option B — URL prefix property</h3>
-  <p>Covers only one specific URL, e.g. <code>https://www.lighthouselaunch.com</code>. Easier to verify but you may need separate properties for subdomains.</p>
-
-  <div class="callout info">
-    <div class="callout-icon">ℹ️</div>
-    <div class="callout-text"><strong>Which should you choose?</strong> If you have one simple website, Domain property is better — it captures everything in one place. If you're running multiple subdomains you want to track separately, use URL prefix.</div>
-  </div>
-
-  <div class="step-box">
-    <div class="step-n">3</div>
-    <div class="step-body">
-      <h3>Verify Ownership</h3>
-      <p>Google needs to confirm you own the site before giving you access to its data. There are several methods depending on your property type.</p>
+        <div class="property-cards">
+          <div class="property-card recommended">
+            <span class="property-badge rec">✓ Recommended</span>
+            <div class="property-title">Domain</div>
+            <div class="property-desc">Covers your entire domain — all subdomains, HTTP and HTTPS, all at once.</div>
+            <div class="property-eg">Enter: <code>lighthouselaunch.com</code></div>
+          </div>
+          <div class="property-card">
+            <span class="property-badge alt">Alternative</span>
+            <div class="property-title">URL Prefix</div>
+            <div class="property-desc">Covers only one specific URL — useful if you need to track a subdomain separately.</div>
+            <div class="property-eg">Enter: <code>https://www.lighthouselaunch.com</code></div>
+          </div>
+        </div>
+        <p class="note">Not sure which to pick? Choose <strong>Domain</strong> — it captures everything in one place.</p>
+      </div>
     </div>
-  </div>
 
-  <h3>Method 1 — DNS record (for Domain properties)</h3>
-  <ol>
-    <li>Google will show you a TXT record like: <code>google-site-verification=abc123xyz...</code></li>
-    <li>Log in to your DNS provider (GoDaddy, Cloudflare, etc.)</li>
-    <li>Add a new <strong>TXT record</strong> with the Name <code>@</code> and the value Google gave you</li>
-    <li>Click <strong>Verify</strong> in Search Console — DNS can take a few minutes to propagate</li>
-  </ol>
+    <!-- Step 3 -->
+    <div class="v-step">
+      <div class="v-step-left">
+        <div class="v-step-num">3</div>
+      </div>
+      <div class="v-step-content">
+        <div class="v-step-title">Verify You Own the Site</div>
+        <p class="v-step-desc">Google needs to confirm you own the site before showing you its data. Pick the method that works for your setup:</p>
 
-  <h3>Method 2 — HTML tag (easiest for URL prefix)</h3>
-  <ol>
-    <li>Google gives you a <code>&lt;meta&gt;</code> tag like:<br>
-    <div class="code-block"><code>&lt;meta name="google-site-verification" content="abc123" /&gt;</code></div></li>
-    <li>Paste it inside the <code>&lt;head&gt;</code> section of your homepage</li>
-    <li>Deploy the change, then click <strong>Verify</strong></li>
-  </ol>
+        <div class="verify-cards">
+          <div class="verify-card">
+            <div class="verify-icon">🌐</div>
+            <div>
+              <div class="verify-title">DNS Record <span class="verify-tag easy">Works with Domain type</span></div>
+              <div class="verify-desc">Google gives you a TXT record value. Log in to your domain registrar (GoDaddy, Cloudflare, Namecheap...) and add it as a <strong>TXT record</strong> with the name <code>@</code>. Takes a few minutes to verify.</div>
+            </div>
+          </div>
+          <div class="verify-card">
+            <div class="verify-icon">🏷️</div>
+            <div>
+              <div class="verify-title">HTML Meta Tag <span class="verify-tag any">Works with URL Prefix</span></div>
+              <div class="verify-desc">Google gives you a <code>&lt;meta&gt;</code> tag. Paste it into the <code>&lt;head&gt;</code> section of your homepage, then click <strong>Verify</strong>.</div>
+            </div>
+          </div>
+          <div class="verify-card">
+            <div class="verify-icon">📊</div>
+            <div>
+              <div class="verify-title">Via Google Analytics <span class="verify-tag any">Easiest if GA4 is installed</span></div>
+              <div class="verify-desc">If GA4 is already on your site with the same Google account, Search Console can verify automatically — just select this option and click Verify. No code changes needed.</div>
+            </div>
+          </div>
+        </div>
 
-  <h3>Method 3 — Google Analytics (if GA4 is already installed)</h3>
-  <p>If you already have Google Analytics on your site with the same Google account, Search Console can use that to verify automatically — just select this option and click Verify.</p>
-
-  <div class="step-box">
-    <div class="step-n">4</div>
-    <div class="step-body">
-      <h3>Submit Your Sitemap</h3>
-      <p>A sitemap tells Google about all the pages on your site so it can crawl them faster. Once verified, go to <strong>Sitemaps</strong> in the left menu and submit your sitemap URL.</p>
+        <div class="callout info">
+          <div class="callout-icon">ℹ️</div>
+          <div class="callout-text"><strong>Adding a DNS record?</strong> In your registrar, create a new record: Type = <strong>TXT</strong>, Name = <strong>@</strong>, Value = the code Google gives you. Save it. DNS can take a few minutes to propagate — try verifying again after 5 minutes if it doesn't work immediately.</div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <p>Most websites have a sitemap at one of these URLs — try them in your browser first:</p>
-  <ul>
-    <li><code>https://yoursite.com/sitemap.xml</code></li>
-    <li><code>https://yoursite.com/sitemap_index.xml</code></li>
-    <li><code>https://yoursite.com/robots.txt</code> — check here for the sitemap location</li>
-  </ul>
-
-  <div class="callout warn">
-    <div class="callout-icon">⚠️</div>
-    <div class="callout-text"><strong>No sitemap?</strong> If your site doesn't have one, most CMS platforms (WordPress, Webflow, Squarespace, Shopify) generate them automatically. For custom sites, tools like <a href="https://www.xml-sitemaps.com" target="_blank">xml-sitemaps.com</a> can generate one for free.</div>
-  </div>
-
-  <div class="step-box">
-    <div class="step-n">5</div>
-    <div class="step-body">
-      <h3>Wait for Data</h3>
-      <p>Search Console shows data from the last 16 months, but it takes <strong>2–3 days</strong> for the first data to appear after connecting. Some reports take up to 28 days to populate fully.</p>
+    <!-- Step 4 -->
+    <div class="v-step">
+      <div class="v-step-left">
+        <div class="v-step-num">4</div>
+      </div>
+      <div class="v-step-content">
+        <div class="v-step-title">Submit Your Sitemap</div>
+        <p class="v-step-desc">A sitemap tells Google about all the pages on your site. Once verified, go to the Sitemaps section and submit yours.</p>
+        <div class="ui-path">
+          <span class="ui-path-label">In Search Console</span>
+          <span class="ui-crumb">Indexing</span>
+          <span class="ui-sep">→</span>
+          <span class="ui-crumb active">Sitemaps</span>
+        </div>
+        <p class="v-step-desc">Try opening these URLs in your browser first to find yours — paste whichever one works:</p>
+        <div class="sitemap-urls">
+          <div class="sitemap-url">
+            <span class="sitemap-url-num">1</span>
+            <code>yoursite.com/sitemap.xml</code>
+            <span class="sitemap-url-note">Most common</span>
+          </div>
+          <div class="sitemap-url">
+            <span class="sitemap-url-num">2</span>
+            <code>yoursite.com/sitemap_index.xml</code>
+            <span class="sitemap-url-note">WordPress common</span>
+          </div>
+          <div class="sitemap-url">
+            <span class="sitemap-url-num">3</span>
+            <code>yoursite.com/robots.txt</code>
+            <span class="sitemap-url-note">Check here for the sitemap URL</span>
+          </div>
+        </div>
+        <div class="callout warn">
+          <div class="callout-icon">⚠️</div>
+          <div class="callout-text"><strong>No sitemap?</strong> WordPress, Webflow, Shopify, and Squarespace all generate sitemaps automatically. For custom sites, use <a href="https://www.xml-sitemaps.com" target="_blank">xml-sitemaps.com</a> to generate one free.</div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <h2>What to Check Once It's Set Up</h2>
-  <ul>
-    <li><strong>Performance</strong> — Your top queries, pages, countries, and devices. This is the most important report.</li>
-    <li><strong>Coverage</strong> — Pages Google has indexed vs. excluded. Fix any errors here first.</li>
-    <li><strong>Core Web Vitals</strong> — Page experience signals. Aim for all URLs in the "Good" bucket.</li>
-    <li><strong>Links</strong> — Which external sites link to you and your most-linked pages.</li>
-    <li><strong>Mobile Usability</strong> — Any pages with mobile UX issues that could hurt rankings.</li>
-  </ul>
+    <!-- Step 5 (Done) -->
+    <div class="v-step">
+      <div class="v-step-left">
+        <div class="v-step-num">5</div>
+      </div>
+      <div class="v-step-content">
+        <div class="v-step-title">Wait for Data</div>
+        <div class="success-block">
+          <div class="success-icon">✓</div>
+          <div>
+            <div class="success-title">You're verified and set up!</div>
+            <div class="success-desc">Search Console takes 2–3 days to start showing keyword and click data. Full 16 months of historical data fills in over 28 days. Check back in a few days.</div>
+          </div>
+        </div>
+        <p class="v-step-desc" style="margin-top:8px">Once data appears, focus on the <strong>Performance</strong> report — that's where your top search queries, click counts, impressions, and average position all live.</p>
+      </div>
+    </div>
 
-  <div class="callout tip">
-    <div class="callout-icon">💡</div>
-    <div class="callout-text"><strong>Connect to AnalyticsDash.</strong> Once your Search Console is set up, you can connect it to AnalyticsDash to see your queries, clicks, impressions, average position, quick-win keywords, and low-CTR opportunities all in one dashboard alongside your GA4 data.</div>
-  </div>
+  </div><!-- end v-steps -->
 
   <div class="art-cta">
     <h3>See your Search Console data in AnalyticsDash</h3>
-    <p>Connect GA4 and Search Console together in one dashboard. Real-time traffic, keyword rankings, and smart SEO insights in one place.</p>
+    <p>Connect GA4 and Search Console together — keyword rankings, click data, low-CTR opportunities, and real-time traffic all in one dashboard.</p>
     <a class="btn-primary" href="/auth/login">
       <svg viewBox="0 0 24 24" style="width:16px;height:16px"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Sign in with Google — it's free
@@ -254,12 +341,12 @@ footer a{color:var(--accent)}
   </div>
 
   <div class="related">
-    <h3>Related Guides</h3>
+    <div class="related-label">Also useful</div>
     <a class="related-link" href="/articles/connect-google-analytics-4">
-      <span style="font-size:22px">📊</span>
+      <span style="font-size:24px">📊</span>
       <div>
-        <div class="related-link-text">How to Connect Google Analytics 4 to Your Website</div>
-        <div class="related-link-sub">Install GA4, set up your data stream, and start tracking visitors</div>
+        <div class="related-link-text">How to Add Google Analytics 4 to Your Website</div>
+        <div class="related-link-sub">Track real-time visitors, traffic sources, and conversions</div>
       </div>
     </a>
   </div>
