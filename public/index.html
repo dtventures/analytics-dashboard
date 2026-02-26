@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analytics Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;--surface:#1a1d2e;--border:#2d3148;--subtle:#1e2235;
+  --text:#e2e8f0;--muted:#64748b;--dim:#94a3b8;
+  --accent:#6366f1;--green:#4ade80;--blue:#60a5fa;--purple:#c084fc;
+  --orange:#fb923c;--pink:#f472b6;--cyan:#22d3ee;--yellow:#fbbf24;--red:#f87171;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* HEADER */
+header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;position:fixed;top:0;left:0;right:0;z-index:200;height:54px}
+header h1{font-size:16px;font-weight:700;color:#f8fafc}
+header h1 span{color:var(--accent)}
+.hdr-right{display:flex;align-items:center;gap:10px}
+.date-pill{background:#252840;border:1px solid #3d4266;border-radius:7px;padding:5px 11px;font-size:12px;color:var(--dim);cursor:pointer;position:relative;user-select:none}
+.date-dropdown{position:absolute;top:calc(100% + 6px);right:0;background:var(--surface);border:1px solid var(--border);border-radius:9px;overflow:hidden;z-index:300;min-width:150px;box-shadow:0 8px 24px #00000066;display:none}
+.date-dropdown.open{display:block}
+.date-opt{padding:9px 14px;font-size:12px;color:var(--dim);cursor:pointer;white-space:nowrap}
+.date-opt:hover{background:var(--subtle);color:var(--text)}
+.date-opt.active{color:var(--accent);font-weight:700}
+.src-pills{display:flex;gap:5px}
+.pill{padding:3px 8px;border-radius:20px;font-size:10px;font-weight:700}
+.pill.ga{background:#1e3a5f;color:#60a5fa;border:1px solid #2563eb33}
+.pill.gsc{background:#1a3a2a;color:#4ade80;border:1px solid #16a34a33}
+.pill.cl{background:#3a1a3a;color:#c084fc;border:1px solid #9333ea33}
+.pill.bi{background:#3a2a1a;color:#fb923c;border:1px solid #ea580c33}
+.pill.em{background:#3a1a2a;color:#f472b6;border:1px solid #ec489933}
+.pill.ah{background:#1a3a3a;color:#22d3ee;border:1px solid #0891b233}
+
+/* USER AVATAR */
+.user-info{display:flex;align-items:center;gap:8px;cursor:pointer;padding:4px 10px;border-radius:8px;border:1px solid var(--border);background:var(--subtle)}
+.user-info:hover{border-color:var(--accent)}
+.user-avatar{width:24px;height:24px;border-radius:50%;object-fit:cover}
+.user-name{font-size:12px;color:var(--dim)}
+.logout-btn{font-size:11px;color:var(--red);background:none;border:none;cursor:pointer;padding:0;font-family:inherit}
+
+/* LAYOUT */
+.layout{display:flex;padding-top:54px}
+
+/* SIDEBAR */
+.sidebar{width:210px;flex-shrink:0;position:fixed;top:54px;left:0;bottom:0;background:var(--surface);border-right:1px solid var(--border);overflow-y:auto;padding:12px 0}
+.nav-group{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:14px 16px 5px}
+.nav-link{display:flex;align-items:center;gap:9px;padding:7px 16px;font-size:12px;color:var(--muted);text-decoration:none;border-left:2px solid transparent;transition:all .15s}
+.nav-link:hover{color:var(--text);background:#1e2235}
+.nav-link.active{color:var(--accent);border-left-color:var(--accent);background:#1e2035}
+.nav-icon{font-size:13px;width:16px;text-align:center}
+
+/* CONTENT */
+.content{margin-left:210px;flex:1;padding:22px 26px;max-width:1380px}
+section{scroll-margin-top:70px;margin-bottom:6px}
+
+/* SECTION LABEL */
+.sl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);margin:30px 0 11px;display:flex;align-items:center;gap:8px}
+.sl:first-child{margin-top:0}
+.sl::after{content:'';flex:1;height:1px;background:var(--subtle)}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:17px 19px}
+.ct{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:13px;display:flex;align-items:center;justify-content:space-between}
+.stag{font-size:9px;padding:2px 6px;border-radius:4px;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.stag.ga{background:#1e3a5f;color:#60a5fa}
+.stag.gsc{background:#1a3a2a;color:#4ade80}
+.stag.cl{background:#3a1a3a;color:#c084fc}
+.stag.bi{background:#3a2a1a;color:#fb923c}
+.stag.em{background:#3a1a2a;color:#f472b6}
+.stag.ah{background:#1a3a3a;color:#22d3ee}
+.stag.up{background:#3a3a1a;color:#fbbf24}
+.stag.mx{background:#252840;color:var(--muted)}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.g5{display:grid;grid-template-columns:repeat(5,1fr);gap:13px}
+.g21{display:grid;grid-template-columns:2fr 1fr;gap:13px}
+.g12{display:grid;grid-template-columns:1fr 2fr;gap:13px}
+.g31{display:grid;grid-template-columns:3fr 1fr;gap:13px}
+.mt13{margin-top:13px}
+.mt18{margin-top:18px}
+
+/* STAT */
+.sv{font-size:28px;font-weight:700;color:#f8fafc;letter-spacing:-1px;line-height:1}
+.ss{font-size:11px;color:var(--muted);margin-top:5px}
+.sc{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:600;padding:2px 7px;border-radius:4px;margin-top:8px}
+.sc.up{background:#14532d33;color:var(--green)}
+.sc.dn{background:#7f1d1d33;color:var(--red)}
+.sc.nt{background:var(--subtle);color:var(--muted)}
+
+/* REALTIME */
+.rtbar{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:15px 20px;display:flex;align-items:center;gap:24px;flex-wrap:wrap}
+.rtlive{display:flex;align-items:center;gap:9px}
+.dot{width:8px;height:8px;background:var(--green);border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;box-shadow:0 0 0 0 #4ade8055}50%{opacity:.8;box-shadow:0 0 0 5px #4ade8000}}
+.rtn{font-size:24px;font-weight:700;color:#f8fafc}
+.rtl{font-size:10px;color:var(--muted)}
+.rtdiv{width:1px;height:32px;background:var(--border)}
+.rts .v{font-size:14px;font-weight:700;color:#e2e8f0}
+.rts .l{font-size:10px;color:var(--muted);margin-top:1px}
+
+/* BARS */
+.barlist{display:flex;flex-direction:column;gap:8px}
+.bh{display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px;color:#cbd5e1}
+.bh .p{color:var(--muted);font-size:11px}
+.btrack{height:5px;background:#252840;border-radius:3px;overflow:hidden}
+.bfill{height:100%;border-radius:3px}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;padding:0 0 7px;border-bottom:1px solid var(--subtle)}
+th:not(:first-child){text-align:right}
+td{padding:7px 0;font-size:12px;border-bottom:1px solid var(--subtle);color:#cbd5e1;vertical-align:middle}
+td:not(:first-child){text-align:right}
+tr:last-child td{border-bottom:none}
+tr:hover td{color:#f1f5f9}
+.qt{color:#93c5fd;font-weight:500}
+.pt{color:#c4b5fd;max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:block}
+.dt{color:var(--cyan)}
+.pb{display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700}
+.pb.p1{background:#14532d44;color:var(--green)}
+.pb.p2{background:#1e3a5f44;color:var(--blue)}
+.pb.p3{background:#3a2a1a44;color:var(--orange)}
+.pb.px{background:var(--subtle);color:var(--muted)}
+
+/* STATUS */
+.sbadge{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600}
+.sbadge.ok{background:#14532d33;color:var(--green)}
+.sbadge.wn{background:#78350f33;color:var(--yellow)}
+.sbadge.er{background:#7f1d1d33;color:var(--red)}
+.sdot{width:6px;height:6px;border-radius:50%;background:currentColor}
+
+/* DEVICE */
+.dvgrid{display:flex;gap:8px}
+.dvc{flex:1;background:#252840;border-radius:8px;padding:11px 7px;text-align:center}
+.dvi{font-size:19px;margin-bottom:4px}
+.dvp{font-size:17px;font-weight:700;color:#f8fafc}
+.dvl{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* BEHAVIOR */
+.bhgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.bhi{background:#252840;border-radius:8px;padding:10px}
+.bhi .v{font-size:19px;font-weight:700;color:#f8fafc}
+.bhi .l{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* DONUT LEGEND */
+.dw{display:flex;align-items:center;gap:14px}
+.dleg{display:flex;flex-direction:column;gap:6px;flex:1}
+.dli{display:flex;align-items:center;gap:6px;font-size:12px;color:#cbd5e1}
+.dld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dlv{margin-left:auto;font-weight:700;color:#f8fafc}
+
+/* CWV */
+.cwvgrid{display:flex;flex-direction:column;gap:10px}
+.cwvh{display:flex;justify-content:space-between;font-size:12px;color:#cbd5e1;margin-bottom:4px}
+.cwvs{font-weight:700}
+.cwvs.ok{color:var(--green)}
+.cwvs.wn{color:var(--yellow)}
+.cwvs.er{color:var(--red)}
+.cwvb{height:5px;background:#252840;border-radius:3px;overflow:hidden}
+.cwvf{height:100%;border-radius:3px}
+.cwvf.ok{background:var(--green)}
+.cwvf.wn{background:var(--yellow)}
+.cwvf.er{background:var(--red)}
+
+/* CLARITY */
+.cllist{display:flex;flex-direction:column;gap:7px}
+.cli{display:flex;align-items:center;justify-content:space-between;background:#252840;border-radius:8px;padding:9px 12px}
+.clil{display:flex;align-items:center;gap:8px;font-size:12px;color:#cbd5e1}
+.cliv{font-size:14px;font-weight:700;color:#f8fafc;text-align:right}
+.clic{font-size:10px;color:var(--green);text-align:right}
+
+/* FUNNEL */
+.funnel{display:flex;flex-direction:column;gap:4px}
+.fs{display:flex;align-items:center;gap:12px}
+.fbar{height:38px;border-radius:5px;display:flex;align-items:center;padding-left:14px;font-size:13px;font-weight:600;color:#f8fafc;min-width:80px}
+.finfo{width:200px;flex-shrink:0}
+.finfo .fn{font-size:15px;font-weight:700;color:#f8fafc}
+.finfo .fl{font-size:11px;color:var(--muted)}
+.fdrop{font-size:11px;color:var(--red);padding:2px 0 2px 212px}
+
+/* USER PATHS */
+.plist{display:flex;flex-direction:column;gap:7px}
+.pi{background:#252840;border-radius:8px;padding:9px 13px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.psteps{display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.ppage{background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:2px 7px;font-size:11px;color:var(--purple)}
+.parr{color:var(--muted);font-size:10px}
+.pst{flex-shrink:0;text-align:right}
+.psn{font-size:13px;font-weight:700;color:#f8fafc}
+.psc{font-size:10px;color:var(--green)}
+
+/* COHORT */
+.cohtable{border-collapse:separate;border-spacing:3px;width:100%}
+.cohtable th{font-size:10px;color:var(--muted);font-weight:600;padding:4px 6px;text-align:center;border:none;background:transparent}
+.cohtable td{height:30px;border-radius:5px;text-align:center;font-size:11px;font-weight:600;border:none;padding:0;min-width:56px}
+.cohl{color:var(--muted);background:transparent!important;text-align:left!important;white-space:nowrap;font-size:11px}
+
+/* SCROLL DEPTH */
+.sdpages{display:flex;flex-direction:column;gap:11px}
+.sdpi{}
+.sdph{display:flex;justify-content:space-between;font-size:12px;color:#cbd5e1;margin-bottom:5px}
+.sdbars{display:flex;gap:3px}
+.sdseg{flex:1;height:7px;border-radius:2px}
+.sdsl{font-size:9px;color:var(--muted);text-align:center;margin-top:2px}
+
+/* INDEX STATS */
+.idxstats{display:flex;gap:10px;margin-bottom:14px}
+.idxs{flex:1;background:#252840;border-radius:8px;padding:11px;text-align:center}
+.idxs .n{font-size:20px;font-weight:700}
+.idxs .l{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* INSIGHT CARD */
+.icard{background:var(--surface);border:1px solid var(--border);border-radius:11px;padding:15px 17px}
+.ihdr{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.iico{font-size:17px}
+.ititle{font-size:13px;font-weight:600;color:#f8fafc}
+.isub{font-size:11px;color:var(--muted);margin-top:1px}
+.ibadge{margin-left:auto;padding:3px 8px;border-radius:4px;font-size:10px;font-weight:700}
+.ibadge.opp{background:#1e3a5f33;color:var(--blue);border:1px solid #1e3a5f}
+.ibadge.wn{background:#78350f33;color:var(--yellow);border:1px solid #78350f55}
+.ibadge.act{background:#7f1d1d33;color:var(--red);border:1px solid #7f1d1d55}
+
+/* UPTIME */
+.utbar{display:flex;gap:2px;margin:10px 0}
+.utseg{height:22px;border-radius:2px;flex:1}
+.utinc{display:flex;flex-direction:column;gap:6px}
+.utinci{display:flex;align-items:center;justify-content:space-between;background:#252840;border-radius:6px;padding:7px 11px;font-size:12px;color:#cbd5e1}
+
+/* CONV DELTA */
+.cdelta{display:flex;gap:9px;margin-top:4px}
+.cdi{flex:1;background:#252840;border-radius:8px;padding:11px;text-align:center}
+.cdi .v{font-size:20px;font-weight:700;color:#f8fafc}
+.cdi .l{font-size:10px;color:var(--muted);margin-top:2px}
+
+/* CHANNEL COLORS */
+.ch-or{color:var(--green)}
+.ch-di{color:var(--blue)}
+.ch-so{color:var(--purple)}
+.ch-re{color:var(--orange)}
+.ch-em{color:var(--pink)}
+
+/* TREND */
+.tup{color:var(--green);font-size:11px}
+.tdn{color:var(--red);font-size:11px}
+.tfl{color:var(--muted);font-size:11px}
+
+/* QW BADGE */
+.qwb{display:inline-block;padding:2px 7px;border-radius:4px;background:#1e3a5f33;color:var(--blue);font-size:11px;font-weight:700}
+
+/* CHART */
+.cw{position:relative}
+.flag{font-size:15px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+.sidebar::-webkit-scrollbar{width:3px}
+
+/* ═══ AUTH OVERLAY ═══ */
+#authOverlay{
+  display:none;position:fixed;inset:0;z-index:1000;
+  background:rgba(10,11,18,0.97);
+  backdrop-filter:blur(8px);
+  align-items:center;justify-content:center;
+}
+#authOverlay.show{display:flex}
+.auth-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:16px;
+  padding:40px 44px;max-width:420px;width:100%;text-align:center;
+}
+.auth-logo{font-size:36px;margin-bottom:16px}
+.auth-title{font-size:22px;font-weight:700;color:#f8fafc;margin-bottom:8px}
+.auth-sub{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.5}
+.google-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  background:#fff;color:#1a1a1a;border:none;border-radius:8px;
+  padding:12px 22px;font-size:14px;font-weight:600;cursor:pointer;
+  transition:opacity .15s;text-decoration:none;
+}
+.google-btn:hover{opacity:.92}
+.google-btn svg{width:18px;height:18px;flex-shrink:0}
+.auth-note{font-size:11px;color:var(--muted);margin-top:18px}
+.setup-steps{text-align:left;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.setup-steps h3{font-size:12px;font-weight:700;color:var(--dim);margin-bottom:10px;text-transform:uppercase;letter-spacing:.5px}
+.setup-step{font-size:11px;color:var(--muted);margin-bottom:6px;padding-left:16px;position:relative;line-height:1.4}
+.setup-step::before{content:attr(data-n);position:absolute;left:0;color:var(--accent);font-weight:700}
+
+/* ═══ SETUP MODAL ═══ */
+#setupOverlay{
+  display:none;position:fixed;inset:0;z-index:900;
+  background:rgba(10,11,18,0.92);
+  backdrop-filter:blur(6px);
+  align-items:center;justify-content:center;
+}
+#setupOverlay.show{display:flex}
+.setup-card{
+  background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  padding:32px 36px;max-width:480px;width:100%;
+}
+.setup-card h2{font-size:18px;font-weight:700;color:#f8fafc;margin-bottom:6px}
+.setup-card p{font-size:13px;color:var(--muted);margin-bottom:24px}
+.setup-field{margin-bottom:16px}
+.setup-field label{display:block;font-size:11px;font-weight:700;color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.setup-field select{
+  width:100%;background:#252840;border:1px solid var(--border);color:var(--text);
+  border-radius:8px;padding:9px 12px;font-size:13px;font-family:inherit;
+  appearance:none;cursor:pointer;
+}
+.setup-field select:focus{outline:none;border-color:var(--accent)}
+.start-btn{
+  width:100%;background:var(--accent);color:#fff;border:none;border-radius:8px;
+  padding:12px;font-size:14px;font-weight:600;cursor:pointer;
+  transition:opacity .15s;font-family:inherit;margin-top:8px;
+}
+.start-btn:hover{opacity:.9}
+.start-btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* ═══ LOADING SHIMMER ═══ */
+.loading .sv,.loading .bh,.loading td,.loading .rtn,.loading .v{
+  background:linear-gradient(90deg,#252840 25%,#2d3148 50%,#252840 75%);
+  background-size:200% 100%;
+  animation:shimmer 1.4s infinite;
+  border-radius:4px;color:transparent!important;
+}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
+
+/* ═══ CONNECT BANNER ═══ */
+.connect-banner{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  background:#252840;border-radius:8px;border:1px dashed var(--border);
+  font-size:12px;color:var(--muted);
+}
+.connect-banner a{color:var(--accent);text-decoration:none}
+.connect-banner a:hover{text-decoration:underline}
+
+/* Error */
+.err-msg{font-size:12px;color:var(--red);margin-top:8px;padding:8px;background:#7f1d1d22;border-radius:6px}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════ AUTH OVERLAY ═══════════════════════════════════ -->
+<div id="authOverlay">
+  <div class="auth-card">
+    <div class="auth-logo">📊</div>
+    <div class="auth-title">Analytics Dashboard</div>
+    <div class="auth-sub">Sign in with Google to connect your GA4 and Search Console data. This app only accesses your analytics — it cannot modify anything.</div>
+    <a class="google-btn" href="/auth/login">
+      <svg viewBox="0 0 24 24"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Sign in with Google
+    </a>
+    <div class="auth-note">Only you can access this dashboard. OAuth tokens are stored in your server session.</div>
+    <div class="setup-steps">
+      <h3>First time? Quick setup needed:</h3>
+      <div class="setup-step" data-n="1.">Go to <strong>console.cloud.google.com</strong> → New Project</div>
+      <div class="setup-step" data-n="2.">Enable: <strong>Analytics Data API, Analytics Admin API, Search Console API</strong></div>
+      <div class="setup-step" data-n="3.">OAuth Consent Screen → External → add your email as test user</div>
+      <div class="setup-step" data-n="4.">Create OAuth Client ID → Web app → add redirect URI: <code>http://localhost:3000/auth/callback</code></div>
+      <div class="setup-step" data-n="5.">Copy Client ID + Secret into your <code>.env</code> file and restart the server</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ SETUP MODAL ═══════════════════════════════════ -->
+<div id="setupOverlay">
+  <div class="setup-card">
+    <h2>Welcome! Choose your properties</h2>
+    <p>Select a GA4 property and Search Console site to power the dashboard.</p>
+    <div class="setup-field">
+      <label>GA4 Property</label>
+      <select id="propertySelect"><option value="">Loading properties…</option></select>
+    </div>
+    <div class="setup-field">
+      <label>Search Console Site</label>
+      <select id="siteSelect"><option value="">Loading sites…</option></select>
+    </div>
+    <div id="setupError" class="err-msg" style="display:none"></div>
+    <button class="start-btn" id="startBtn" disabled onclick="saveSettings()">Load Dashboard</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════ HEADER ═══════════════════════════════════ -->
+<header>
+  <h1>Analytics <span>Dashboard</span></h1>
+  <div class="hdr-right">
+    <div class="src-pills">
+      <span class="pill ga">GA4</span>
+      <span class="pill gsc">Search Console</span>
+      <span class="pill cl">Clarity</span>
+      <span class="pill ah">Ahrefs</span>
+    </div>
+    <div class="date-pill" id="datePillLabel" onclick="toggleDateDropdown(event)">
+      Last 30 days ▾
+      <div class="date-dropdown" id="dateDropdown">
+        <div class="date-opt" data-days="7"  onclick="selectDays(7)">Last 7 days</div>
+        <div class="date-opt active" data-days="30" onclick="selectDays(30)">Last 30 days</div>
+        <div class="date-opt" data-days="90" onclick="selectDays(90)">Last 90 days</div>
+      </div>
+    </div>
+    <div class="user-info" id="userInfo" style="display:none">
+      <img class="user-avatar" id="userAvatar" src="" alt="">
+      <span class="user-name" id="userName"></span>
+      <span>·</span>
+      <button class="logout-btn" onclick="logout()">Sign out</button>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="nav-group">Analytics</div>
+  <a href="#realtime" class="nav-link active"><span class="nav-icon">🔴</span>Real-Time</a>
+  <a href="#overview" class="nav-link"><span class="nav-icon">📊</span>Traffic Overview</a>
+  <a href="#acquisition" class="nav-link"><span class="nav-icon">🔍</span>Acquisition</a>
+
+  <div class="nav-group">Search</div>
+  <a href="#search" class="nav-link"><span class="nav-icon">🔎</span>Search Performance</a>
+  <a href="#keywords" class="nav-link"><span class="nav-icon">🏆</span>Quick Wins</a>
+
+  <div class="nav-group">Users</div>
+  <a href="#audience" class="nav-link"><span class="nav-icon">👥</span>Audience</a>
+  <a href="#content" class="nav-link"><span class="nav-icon">📄</span>Content & Pages</a>
+  <a href="#conversions" class="nav-link"><span class="nav-icon">✅</span>Conversions</a>
+
+  <div class="nav-group">Technical</div>
+  <a href="#technical" class="nav-link"><span class="nav-icon">⚙️</span>Core Web Vitals</a>
+
+  <div class="nav-group">Intelligence</div>
+  <a href="#insights" class="nav-link"><span class="nav-icon">💡</span>Smart Insights</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="content">
+
+<!-- ═══ REAL-TIME ═══ -->
+<section id="realtime">
+<div class="sl">Real-Time</div>
+<div class="rtbar" id="rtbar">
+  <div class="rtlive">
+    <div class="dot"></div>
+    <div><div class="rtn" id="rtTotal">—</div><div class="rtl">active users now</div></div>
+  </div>
+  <div class="rtdiv"></div>
+  <div id="rtSources" style="display:contents"></div>
+  <div class="rtdiv"></div>
+  <div class="rts"><div class="v" id="rtTopPage">—</div><div class="l">Top Active Page</div></div>
+</div>
+</section>
+
+<!-- ═══ TRAFFIC OVERVIEW ═══ -->
+<section id="overview">
+<div class="sl">Traffic Overview</div>
+<div class="g4" id="overviewCards">
+  <div class="card loading" id="cardUsers"><div class="ct">Total Users <span class="stag ga">GA4</span></div><div class="sv" id="ovUsers">—</div><div class="ss">unique visitors</div><div class="sc nt" id="ovUsersChg">…</div></div>
+  <div class="card loading" id="cardSessions"><div class="ct">Sessions <span class="stag ga">GA4</span></div><div class="sv" id="ovSessions">—</div><div class="ss">total sessions</div><div class="sc nt" id="ovSessionsChg">…</div></div>
+  <div class="card loading" id="cardImpr"><div class="ct">Impressions <span class="stag gsc">GSC</span></div><div class="sv" id="ovImpr">—</div><div class="ss">Google search appearances</div><div class="sc nt" id="ovImprChg">—</div></div>
+  <div class="card loading" id="cardClicks"><div class="ct">Search Clicks <span class="stag gsc">GSC</span></div><div class="sv" id="ovClicks">—</div><div class="ss" id="ovCTR">—% avg CTR</div><div class="sc nt" id="ovClicksChg">—</div></div>
+</div>
+<div class="g4 mt13" id="overviewCards2">
+  <div class="card loading" id="cardConv"><div class="ct">Conversions <span class="stag ga">GA4</span></div><div class="sv" id="ovConv">—</div><div class="ss">goals completed</div><div class="sc nt" id="ovConvChg">…</div></div>
+  <div class="card loading" id="cardEngage"><div class="ct">Engaged Rate <span class="stag ga">GA4</span></div><div class="sv" id="ovEngage">—</div><div class="ss">sessions with 10s+ or 2+ pages</div><div class="sc nt" id="ovEngageChg">…</div></div>
+  <div class="card loading" id="cardBounce"><div class="ct">Bounce Rate <span class="stag ga">GA4</span></div><div class="sv" id="ovBounce">—</div><div class="ss">single-page sessions</div><div class="sc nt" id="ovBounceChg">…</div></div>
+  <div class="card loading" id="cardPos"><div class="ct">Avg Position <span class="stag gsc">GSC</span></div><div class="sv" id="ovPos">—</div><div class="ss">Google search rank</div><div class="sc nt" id="ovPosChg">—</div></div>
+</div>
+</section>
+
+<!-- ═══ ACQUISITION ═══ -->
+<section id="acquisition">
+<div class="sl">Acquisition — How They Found You</div>
+<div class="g2">
+  <div class="card loading" id="cardChannels">
+    <div class="ct">Traffic by Channel <span class="stag ga">GA4</span></div>
+    <div class="barlist" id="channelBars">
+      <div style="height:120px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px">Loading…</div>
+    </div>
+  </div>
+  <div class="card loading" id="cardReferrers">
+    <div class="ct">Top Referring Domains <span class="stag ga">GA4</span></div>
+    <table>
+      <thead><tr><th>Domain</th><th>Sessions</th><th>Conv</th><th>Rate</th></tr></thead>
+      <tbody id="referrerTable"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Traffic trend -->
+<div class="card mt13">
+  <div class="ct">Traffic Over Time <span class="stag ga">GA4</span></div>
+  <div class="cw" style="height:190px"><canvas id="chartTrafficTrend"></canvas></div>
+</div>
+</section>
+
+<!-- ═══ SEARCH PERFORMANCE ═══ -->
+<section id="search">
+<div class="sl">Search Performance — Google Search Console</div>
+
+<div class="card">
+  <div class="ct">Top Queries — What People Typed to Find You <span class="stag gsc">Google Search Console</span></div>
+  <table>
+    <thead><tr><th>Query</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Position</th></tr></thead>
+    <tbody id="queriesTable"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
+  </table>
+</div>
+
+<div class="g2 mt13">
+  <div class="card">
+    <div class="ct">GSC by Device <span class="stag gsc">GSC</span></div>
+    <table>
+      <thead><tr><th>Device</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Avg Pos</th></tr></thead>
+      <tbody id="gscDeviceTable"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="ct">Top Pages by Search <span class="stag gsc">GSC</span></div>
+    <table>
+      <thead><tr><th>Page</th><th>Impressions</th><th>Clicks</th><th>CTR</th></tr></thead>
+      <tbody id="gscPagesTable"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Impressions vs Clicks chart -->
+<div class="card mt13">
+  <div class="ct">Search Impressions vs Clicks — 30 Days <span class="stag gsc">GSC</span></div>
+  <div class="cw" style="height:180px"><canvas id="chartSearchPerf"></canvas></div>
+</div>
+</section>
+
+<!-- ═══ QUICK WINS ═══ -->
+<section id="keywords">
+<div class="sl">Quick Wins — Positions 11–20</div>
+<div class="card">
+  <div class="ct">⚡ Keywords One Push from Page 1 <span class="stag gsc">GSC</span></div>
+  <table>
+    <thead><tr><th>Keyword</th><th>Position</th><th>Impressions</th><th>Clicks</th><th>CTR</th></tr></thead>
+    <tbody id="quickWinsTable"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
+  </table>
+</div>
+
+<div class="card mt13">
+  <div class="ct">🎯 High Impressions, Low CTR — Title/Meta Opportunities <span class="stag gsc">GSC</span></div>
+  <table>
+    <thead><tr><th>Query</th><th>Impressions</th><th>Clicks</th><th>CTR</th><th>Opportunity</th></tr></thead>
+    <tbody id="lowCTRTable"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
+  </table>
+  <div style="margin-top:10px;font-size:11px;color:var(--muted)" id="lowCTRNote"></div>
+</div>
+</section>
+
+<!-- ═══ AUDIENCE ═══ -->
+<section id="audience">
+<div class="sl">Audience — Who They Are</div>
+<div class="g3">
+  <!-- Geography -->
+  <div class="card loading" id="cardCountries">
+    <div class="ct">Top Countries <span class="stag ga">GA4</span></div>
+    <div class="barlist" id="countriesBars">
+      <div style="height:120px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:12px">Loading…</div>
+    </div>
+  </div>
+
+  <!-- Devices -->
+  <div class="card loading" id="cardDevices">
+    <div class="ct">Device Split <span class="stag ga">GA4</span></div>
+    <div class="dvgrid" id="deviceGrid">
+      <div class="dvc"><div class="dvi">📱</div><div class="dvp" id="devMobile">—</div><div class="dvl">Mobile</div></div>
+      <div class="dvc"><div class="dvi">💻</div><div class="dvp" id="devDesktop">—</div><div class="dvl">Desktop</div></div>
+      <div class="dvc"><div class="dvi">📟</div><div class="dvp" id="devTablet">—</div><div class="dvl">Tablet</div></div>
+    </div>
+    <div class="mt18">
+      <div class="ct">Age Groups <span class="stag ga">GA4</span></div>
+      <div class="barlist" id="ageBars">
+        <div style="color:var(--muted);font-size:12px;padding:10px 0">Loading…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- New vs Returning -->
+  <div class="card loading" id="cardNewReturn">
+    <div class="ct">New vs Returning <span class="stag ga">GA4</span></div>
+    <div class="dw">
+      <div style="width:120px;height:120px;flex-shrink:0"><canvas id="donutNewReturn"></canvas></div>
+      <div class="dleg" id="newReturnLeg">
+        <div class="dli"><div class="dld" style="background:var(--accent)"></div>New Users<span class="dlv" id="newPct">—</span></div>
+        <div class="dli"><div class="dld" style="background:var(--cyan)"></div>Returning<span class="dlv" id="retPct">—</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ CONTENT & PAGES ═══ -->
+<section id="content">
+<div class="sl">Content & Pages</div>
+<div class="g2">
+  <div class="card loading" id="cardPages">
+    <div class="ct">Top Pages by Traffic <span class="stag ga">GA4</span></div>
+    <table>
+      <thead><tr><th>Page</th><th>Views</th><th>Avg Time</th><th>Bounce</th></tr></thead>
+      <tbody id="pagesTable"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
+    </table>
+  </div>
+
+  <div class="card loading" id="cardEvents">
+    <div class="ct">Top Events <span class="stag ga">GA4</span></div>
+    <table>
+      <thead><tr><th>Event</th><th>Count</th><th>Conversions</th></tr></thead>
+      <tbody id="eventsTable"><tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
+    </table>
+  </div>
+</div>
+</section>
+
+<!-- ═══ CONVERSIONS ═══ -->
+<section id="conversions">
+<div class="sl">Conversions</div>
+<div class="g2">
+  <div class="card loading" id="cardConvByChannel">
+    <div class="ct">Conv Rate by Channel <span class="stag ga">GA4</span></div>
+    <table>
+      <thead><tr><th>Channel</th><th>Sessions</th><th>Conv</th><th>Rate</th></tr></thead>
+      <tbody id="convChannelTable"><tr><td colspan="4" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
+    </table>
+  </div>
+  <div class="card" id="cardMobileGap">
+    <div class="ct">Mobile vs Desktop Conversion Gap <span class="stag ga">GA4</span></div>
+    <div class="cdelta">
+      <div class="cdi"><div class="v" style="color:var(--blue)" id="desktopConvRate">—</div><div class="l">Desktop conv rate</div></div>
+      <div class="cdi"><div class="v" style="color:var(--red)" id="mobileConvRate">—</div><div class="l">Mobile conv rate</div></div>
+      <div class="cdi"><div class="v" style="color:var(--yellow)" id="mobileGap">—</div><div class="l">Gap</div></div>
+      <div class="cdi"><div class="v" id="mobilePct">—</div><div class="l">of traffic is mobile</div></div>
+    </div>
+    <div style="margin-top:12px;font-size:12px;color:var(--muted);background:#252840;border-radius:8px;padding:10px 14px" id="mobileGapNote">Loading device data…</div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ CONNECT TOOLS ═══ -->
+<section id="technical">
+<div class="sl">Connect More Data Sources</div>
+<div class="card">
+  <div class="ct">External Tools — Connect to Unlock More Sections</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <div class="connect-banner">🔗 <strong>Backlinks / DR</strong> — <a href="https://ahrefs.com" target="_blank">Connect Ahrefs</a> or <a href="https://semrush.com" target="_blank">SEMrush</a></div>
+    <div class="connect-banner">📹 <strong>Session Recordings</strong> — <a href="https://clarity.microsoft.com" target="_blank">Connect Microsoft Clarity</a></div>
+    <div class="connect-banner">📧 <strong>Email Marketing</strong> — <a href="https://mailchimp.com" target="_blank">Connect Mailchimp</a> or ConvertKit</div>
+    <div class="connect-banner">🟢 <strong>Uptime Monitoring</strong> — <a href="https://uptimerobot.com" target="_blank">Connect UptimeRobot</a></div>
+    <div class="connect-banner">📋 <strong>Index Coverage</strong> — View in <a href="https://search.google.com/search-console" target="_blank">Search Console → Coverage report</a></div>
+    <div class="connect-banner">⚡ <strong>Core Web Vitals</strong> — View in <a href="https://search.google.com/search-console/core-web-vitals" target="_blank">Search Console → CWV</a></div>
+  </div>
+</div>
+</section>
+
+<!-- ═══ SMART INSIGHTS ═══ -->
+<section id="insights">
+<div class="sl">Smart Insights — Calculated from Your Real Data</div>
+<div id="insightsGrid" class="g2">
+  <div class="icard">
+    <div class="ihdr">
+      <span class="iico">⏳</span>
+      <div><div class="ititle">Loading insights…</div><div class="isub">Waiting for data from GA4 + Search Console</div></div>
+    </div>
+  </div>
+</div>
+</section>
+
+</main>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+const state = {
+  propertyId: null,
+  siteUrl: null,
+  user: null,
+  days: 30,
+  ga4Overview: null,
+  ga4Channels: null,
+  ga4Audience: null,
+  gscOverview: null,
+  gscQueries: null,
+};
+
+let realtimeInterval = null;
+
+// ═══════════════════════════════════════════════
+// FORMATTERS
+// ═══════════════════════════════════════════════
+const fmt = {
+  num: n => n == null ? '—' : n >= 1e6 ? (n/1e6).toFixed(1)+'M' : n >= 1e3 ? (n/1e3).toFixed(1)+'K' : String(Math.round(n)),
+  pct: n => n == null ? '—' : Math.round(n * 100) + '%',
+  dur: s => {
+    if (s == null || isNaN(s)) return '—';
+    const m = Math.floor(s / 60), sec = Math.round(s % 60);
+    return `${m}m ${String(sec).padStart(2,'0')}s`;
+  },
+  chg: (v, invert = false) => {
+    if (v == null || isNaN(v)) return '<span class="sc nt">—</span>';
+    const up = invert ? v < 0 : v > 0;
+    const cls = up ? 'up' : 'dn';
+    const arrow = v > 0 ? '↑' : '↓';
+    return `<span class="sc ${cls}">${arrow} ${Math.abs(v).toFixed(1)}%</span>`;
+  },
+  positionBadge: p => {
+    if (p <= 3) return `<span class="pb p1">#${Math.round(p)}</span>`;
+    if (p <= 10) return `<span class="pb p2">#${Math.round(p)}</span>`;
+    if (p <= 20) return `<span class="pb p3">#${Math.round(p)}</span>`;
+    return `<span class="pb px">#${Math.round(p)}</span>`;
+  },
+  date: s => { // YYYYMMDD → MM/DD
+    if (!s || s.length < 8) return s;
+    return s.slice(4,6) + '/' + s.slice(6,8);
+  },
+};
+
+// ═══════════════════════════════════════════════
+// AUTH INIT
+// ═══════════════════════════════════════════════
+async function init() {
+  const params = new URLSearchParams(location.search);
+  if (params.get('error')) {
+    alert('Auth error: ' + params.get('error') + '\n\nCheck your Google Cloud setup.');
+    history.replaceState({}, '', '/');
+  }
+
+  try {
+    const res = await fetch('/auth/status');
+    const data = await res.json();
+
+    if (!data.authenticated) {
+      document.getElementById('authOverlay').classList.add('show');
+      return;
+    }
+
+    // Show user info in header
+    state.user = data.user;
+    if (data.user) {
+      document.getElementById('userAvatar').src = data.user.picture || '';
+      document.getElementById('userName').textContent = data.user.name || data.user.email;
+      document.getElementById('userInfo').style.display = 'flex';
+    }
+
+    state.propertyId = data.selectedProperty;
+    state.siteUrl = data.selectedSite;
+
+    if (!state.propertyId) {
+      await loadPropertyOptions();
+      document.getElementById('setupOverlay').classList.add('show');
+      return;
+    }
+
+    startDashboard();
+  } catch (e) {
+    console.error('Init error:', e);
+    document.getElementById('authOverlay').classList.add('show');
+  }
+}
+
+async function loadPropertyOptions() {
+  try {
+    const res = await fetch('/api/properties');
+    const data = await res.json();
+
+    const propSel = document.getElementById('propertySelect');
+    const siteSel = document.getElementById('siteSelect');
+
+    propSel.innerHTML = data.properties?.length
+      ? data.properties.map(p => `<option value="${p.id}">${p.name} (${p.account})</option>`).join('')
+      : '<option value="">No GA4 properties found</option>';
+
+    siteSel.innerHTML = data.sites?.length
+      ? data.sites.map(s => `<option value="${encodeURIComponent(s.url)}">${decodeURIComponent(s.url)}</option>`).join('')
+      : '<option value="">No Search Console sites found</option>';
+
+    checkSetupReady();
+    propSel.onchange = checkSetupReady;
+    siteSel.onchange = checkSetupReady;
+  } catch (e) {
+    document.getElementById('setupError').textContent = 'Error loading properties: ' + e.message;
+    document.getElementById('setupError').style.display = 'block';
+  }
+}
+
+function checkSetupReady() {
+  const p = document.getElementById('propertySelect').value;
+  const s = document.getElementById('siteSelect').value;
+  document.getElementById('startBtn').disabled = !p || !s;
+}
+
+async function saveSettings() {
+  const propertyId = document.getElementById('propertySelect').value;
+  const siteUrl = decodeURIComponent(document.getElementById('siteSelect').value);
+  document.getElementById('startBtn').disabled = true;
+  document.getElementById('startBtn').textContent = 'Loading…';
+
+  try {
+    await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ propertyId, siteUrl }),
+    });
+    state.propertyId = propertyId;
+    state.siteUrl = siteUrl;
+    document.getElementById('setupOverlay').classList.remove('show');
+    startDashboard();
+  } catch (e) {
+    document.getElementById('setupError').textContent = 'Error: ' + e.message;
+    document.getElementById('setupError').style.display = 'block';
+    document.getElementById('startBtn').disabled = false;
+    document.getElementById('startBtn').textContent = 'Load Dashboard';
+  }
+}
+
+function logout() {
+  if (realtimeInterval) clearInterval(realtimeInterval);
+  window.location.href = '/auth/logout';
+}
+
+// ═══════════════════════════════════════════════
+// CHART INSTANCES
+// ═══════════════════════════════════════════════
+const charts = {};
+
+function darkOpts() {
+  return {
+    responsive: true, maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+      x: { grid: { color: '#2d3148' }, ticks: { color: '#64748b', font: { size: 10 } } },
+      y: { grid: { color: '#2d3148' }, ticks: { color: '#64748b', font: { size: 10 } } },
+    },
+  };
+}
+
+function initCharts() {
+  // Traffic Trend (line)
+  charts.trend = new Chart(document.getElementById('chartTrafficTrend'), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'Sessions', data: [], borderColor: '#6366f1', backgroundColor: '#6366f118', tension: 0.3, fill: true, pointRadius: 2 },
+        { label: 'Users', data: [], borderColor: '#60a5fa', backgroundColor: 'transparent', tension: 0.3, pointRadius: 2 },
+      ],
+    },
+    options: { ...darkOpts(), plugins: { legend: { display: true, labels: { color: '#64748b', font: { size: 10 } } } } },
+  });
+
+  // Search perf (line)
+  charts.search = new Chart(document.getElementById('chartSearchPerf'), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'Impressions', data: [], borderColor: '#4ade80', backgroundColor: '#4ade8018', tension: 0.3, fill: true, pointRadius: 1 },
+        { label: 'Clicks', data: [], borderColor: '#6366f1', backgroundColor: 'transparent', tension: 0.3, pointRadius: 1, yAxisID: 'y2' },
+      ],
+    },
+    options: {
+      ...darkOpts(),
+      plugins: { legend: { display: true, labels: { color: '#64748b', font: { size: 10 } } } },
+      scales: {
+        x: { grid: { color: '#2d3148' }, ticks: { color: '#64748b', font: { size: 9 }, maxTicksLimit: 10 } },
+        y: { grid: { color: '#2d3148' }, ticks: { color: '#64748b', font: { size: 9 } }, position: 'left' },
+        y2: { grid: { display: false }, ticks: { color: '#64748b', font: { size: 9 } }, position: 'right' },
+      },
+    },
+  });
+
+  // Donut new vs returning
+  charts.donut = new Chart(document.getElementById('donutNewReturn'), {
+    type: 'doughnut',
+    data: {
+      labels: ['New', 'Returning'],
+      datasets: [{ data: [68, 32], backgroundColor: ['#6366f1', '#22d3ee'], borderWidth: 0 }],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false, cutout: '70%',
+      plugins: { legend: { display: false } },
+    },
+  });
+}
+
+// ═══════════════════════════════════════════════
+// DATA LOADING
+// ═══════════════════════════════════════════════
+async function apiFetch(url) {
+  const res = await fetch(url);
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText }));
+    throw new Error(err.error || res.statusText);
+  }
+  return res.json();
+}
+
+function rmLoading(...ids) {
+  ids.forEach(id => document.getElementById(id)?.classList.remove('loading'));
+}
+
+// GA4 Overview
+async function loadOverview(pid, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/ga4/overview?propertyId=${pid}&days=${days}`);
+    state.ga4Overview = data;
+    const c = data.current, ch = data.changes;
+    document.getElementById('ovUsers').textContent = fmt.num(c.users);
+    document.getElementById('ovUsersChg').outerHTML = fmt.chg(ch.users);
+    document.getElementById('ovSessions').textContent = fmt.num(c.sessions);
+    document.getElementById('ovSessionsChg').outerHTML = fmt.chg(ch.sessions);
+    document.getElementById('ovConv').textContent = fmt.num(c.conversions);
+    document.getElementById('ovConvChg').outerHTML = fmt.chg(ch.conversions);
+    document.getElementById('ovEngage').textContent = Math.round(c.engagementRate * 100) + '%';
+    document.getElementById('ovEngageChg').outerHTML = fmt.chg(ch.engagementRate);
+    document.getElementById('ovBounce').textContent = Math.round(c.bounceRate * 100) + '%';
+    document.getElementById('ovBounceChg').outerHTML = fmt.chg(ch.bounceRate, true);
+    rmLoading('cardUsers','cardSessions','cardConv','cardEngage','cardBounce');
+    computeInsights();
+  } catch (e) {
+    console.error('Overview:', e.message);
+  }
+}
+
+// GSC Overview
+async function loadGSCOverview(site, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/gsc/overview?siteUrl=${encodeURIComponent(site)}&days=${days}`);
+    state.gscOverview = data;
+    const t = data.totals;
+    document.getElementById('ovImpr').textContent = fmt.num(t.impressions);
+    document.getElementById('ovImprChg').outerHTML = '<span class="sc nt">—</span>';
+    document.getElementById('ovClicks').textContent = fmt.num(t.clicks);
+    document.getElementById('ovCTR').textContent = t.ctr.toFixed(1) + '% avg CTR';
+    document.getElementById('ovClicksChg').outerHTML = '<span class="sc nt">—</span>';
+    document.getElementById('ovPos').textContent = t.position.toFixed(1);
+    document.getElementById('ovPosChg').outerHTML = '<span class="sc nt">—</span>';
+    rmLoading('cardImpr','cardClicks','cardPos');
+
+    // GSC device table
+    const devMap = { desktop:'💻 Desktop', mobile:'📱 Mobile', tablet:'📟 Tablet' };
+    document.getElementById('gscDeviceTable').innerHTML = (data.devices || []).map(d => `
+      <tr>
+        <td>${devMap[d.device] || d.device}</td>
+        <td>${fmt.num(d.impressions)}</td>
+        <td>${fmt.num(d.clicks)}</td>
+        <td>${d.ctr.toFixed(1)}%</td>
+        <td>${d.position.toFixed(1)}</td>
+      </tr>`).join('') || '<tr><td colspan="5" style="color:var(--muted)">No data</td></tr>';
+
+    // Search perf chart
+    const dates = (data.dates || []);
+    charts.search.data.labels = dates.map(d => d.date.slice(5)); // MM-DD
+    charts.search.data.datasets[0].data = dates.map(d => d.impressions);
+    charts.search.data.datasets[1].data = dates.map(d => d.clicks);
+    charts.search.update();
+
+    computeInsights();
+  } catch (e) {
+    console.error('GSC overview:', e.message);
+  }
+}
+
+// GA4 Channels
+async function loadChannels(pid, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/ga4/channels?propertyId=${pid}&days=${days}`);
+    state.ga4Channels = data;
+    const colors = {
+      'Organic Search':'var(--green)','Direct':'var(--blue)','Organic Social':'var(--purple)',
+      'Referral':'var(--orange)','Email':'var(--pink)','Paid Search':'var(--yellow)',
+      'Paid Social':'var(--red)','(Other)':'var(--muted)',
+    };
+    const bars = data.channels.slice(0, 6).map(ch => {
+      const color = colors[ch.channel] || 'var(--accent)';
+      return `<div>
+        <div class="bh">
+          <span style="color:${color}">${ch.channel}</span>
+          <span>${fmt.num(ch.sessions)} <span class="p">${ch.pct}%</span></span>
+        </div>
+        <div class="btrack"><div class="bfill" style="width:${ch.pct}%;background:${color}"></div></div>
+      </div>`;
+    }).join('');
+    document.getElementById('channelBars').innerHTML = bars || '<div style="color:var(--muted);font-size:12px">No data</div>';
+    rmLoading('cardChannels');
+
+    // Conv by channel table
+    document.getElementById('convChannelTable').innerHTML = data.channels.slice(0,6).map(ch => {
+      const color = colors[ch.channel] || 'var(--accent)';
+      const rate = ch.sessions ? ((ch.conversions / ch.sessions) * 100).toFixed(1) + '%' : '—';
+      return `<tr>
+        <td><span style="color:${color}">${ch.channel}</span></td>
+        <td>${fmt.num(ch.sessions)}</td>
+        <td>${fmt.num(ch.conversions)}</td>
+        <td>${rate}</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="4" style="color:var(--muted)">No data</td></tr>';
+    rmLoading('cardConvByChannel');
+    computeInsights();
+  } catch (e) {
+    console.error('Channels:', e.message);
+  }
+}
+
+// GA4 Audience
+async function loadAudience(pid, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/ga4/audience?propertyId=${pid}&days=${days}`);
+    state.ga4Audience = data;
+
+    // Countries
+    const totalUsers = data.countries.reduce((s,c) => s + c.users, 0) || 1;
+    document.getElementById('countriesBars').innerHTML = data.countries.slice(0,7).map(c => {
+      const pct = Math.round((c.users / totalUsers) * 100);
+      return `<div>
+        <div class="bh"><span>${c.country}</span><span>${fmt.num(c.users)} <span class="p">${pct}%</span></span></div>
+        <div class="btrack"><div class="bfill" style="width:${pct}%;background:var(--accent)"></div></div>
+      </div>`;
+    }).join('') || '<div style="color:var(--muted)">No data</div>';
+    rmLoading('cardCountries');
+
+    // Devices
+    const totalDevUsers = data.devices.reduce((s,d) => s + d.users, 0) || 1;
+    const mobile = data.devices.find(d => d.device === 'mobile');
+    const desktop = data.devices.find(d => d.device === 'desktop');
+    const tablet = data.devices.find(d => d.device === 'tablet');
+    const devPct = d => d ? Math.round((d.users / totalDevUsers) * 100) + '%' : '—';
+    document.getElementById('devMobile').textContent = devPct(mobile);
+    document.getElementById('devDesktop').textContent = devPct(desktop);
+    document.getElementById('devTablet').textContent = devPct(tablet);
+    rmLoading('cardDevices');
+
+    // Ages
+    const totalAge = data.ages.reduce((s,a) => s + a.users, 0) || 1;
+    document.getElementById('ageBars').innerHTML = data.ages.map(a => {
+      const pct = Math.round((a.users / totalAge) * 100);
+      return `<div>
+        <div class="bh"><span>${a.bracket}</span><span>${pct}%</span></div>
+        <div class="btrack"><div class="bfill" style="width:${pct}%;background:var(--accent)"></div></div>
+      </div>`;
+    }).join('') || '<div style="color:var(--muted)">No age data (demographic reporting may be disabled)</div>';
+
+    // New vs returning donut
+    const newU = data.newVsReturning.find(r => r.type === 'new') || { users: 0 };
+    const retU = data.newVsReturning.find(r => r.type === 'returning') || { users: 0 };
+    const tot = (newU.users + retU.users) || 1;
+    const newPct = Math.round((newU.users / tot) * 100);
+    const retPct = 100 - newPct;
+    document.getElementById('newPct').textContent = newPct + '%';
+    document.getElementById('retPct').textContent = retPct + '%';
+    charts.donut.data.datasets[0].data = [newPct, retPct];
+    charts.donut.update();
+    rmLoading('cardNewReturn');
+
+    // Mobile conv gap
+    const mobileConv = mobile?.conversions || 0;
+    const desktopConv = desktop?.conversions || 0;
+    const mobSess = mobile?.sessions || 1;
+    const deskSess = desktop?.sessions || 1;
+    const mobRate = ((mobileConv / mobSess) * 100).toFixed(1) + '%';
+    const deskRate = ((desktopConv / deskSess) * 100).toFixed(1) + '%';
+    const gap = ((desktopConv / deskSess) - (mobileConv / mobSess)) * 100;
+    const mobilePct = Math.round((mobile?.users || 0) / totalDevUsers * 100);
+    document.getElementById('mobileConvRate').textContent = mobRate;
+    document.getElementById('desktopConvRate').textContent = deskRate;
+    document.getElementById('mobileGap').textContent = gap > 0 ? `-${gap.toFixed(1)}pp` : 'Even';
+    document.getElementById('mobilePct').textContent = mobilePct + '%';
+    document.getElementById('mobileGapNote').innerHTML = gap > 1
+      ? `⚠️ <strong style="color:var(--yellow)">Action needed:</strong> Mobile drives ${mobilePct}% of traffic but converts at a lower rate than desktop. Audit your mobile UX and CTAs.`
+      : `✅ Mobile and desktop conversion rates are similar — good work on responsive design!`;
+
+    computeInsights();
+  } catch (e) {
+    console.error('Audience:', e.message);
+  }
+}
+
+// GA4 Pages
+async function loadPages(pid, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/ga4/pages?propertyId=${pid}&days=${days}`);
+    document.getElementById('pagesTable').innerHTML = data.pages.slice(0,10).map(p => `
+      <tr>
+        <td><span class="pt">${p.path}</span></td>
+        <td>${fmt.num(p.views)}</td>
+        <td>${fmt.dur(p.avgDuration)}</td>
+        <td>${p.bounceRate}%</td>
+      </tr>`).join('') || '<tr><td colspan="4" style="color:var(--muted)">No data</td></tr>';
+    rmLoading('cardPages');
+  } catch (e) {
+    console.error('Pages:', e.message);
+  }
+}
+
+// GA4 Events
+async function loadEvents(pid, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/ga4/events?propertyId=${pid}&days=${days}`);
+    document.getElementById('eventsTable').innerHTML = data.events.slice(0,12).map(e => `
+      <tr>
+        <td>${e.name}</td>
+        <td>${fmt.num(e.count)}</td>
+        <td>${fmt.num(e.conversions)}</td>
+      </tr>`).join('') || '<tr><td colspan="3" style="color:var(--muted)">No data</td></tr>';
+    rmLoading('cardEvents');
+  } catch (e) {
+    console.error('Events:', e.message);
+  }
+}
+
+// GA4 Referrers
+async function loadReferrers(pid, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/ga4/referrers?propertyId=${pid}&days=${days}`);
+    document.getElementById('referrerTable').innerHTML = data.referrers.slice(0,8).map(r => `
+      <tr>
+        <td><span class="dt">${r.domain}</span></td>
+        <td>${fmt.num(r.sessions)}</td>
+        <td>${fmt.num(r.conversions)}</td>
+        <td>${r.rate}%</td>
+      </tr>`).join('') || '<tr><td colspan="4" style="color:var(--muted)">No referral traffic found</td></tr>';
+    rmLoading('cardReferrers');
+  } catch (e) {
+    console.error('Referrers:', e.message);
+  }
+}
+
+// GA4 Trend
+async function loadTrend(pid, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/ga4/trend?propertyId=${pid}&days=${days}`);
+    charts.trend.data.labels = data.points.map(p => fmt.date(p.date));
+    charts.trend.data.datasets[0].data = data.points.map(p => p.sessions);
+    charts.trend.data.datasets[1].data = data.points.map(p => p.users);
+    charts.trend.update();
+  } catch (e) {
+    console.error('Trend:', e.message);
+  }
+}
+
+// GSC Queries
+async function loadQueries(site, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/gsc/queries?siteUrl=${encodeURIComponent(site)}&days=${days}`);
+    state.gscQueries = data.queries;
+    document.getElementById('queriesTable').innerHTML = data.queries.slice(0,15).map(q => `
+      <tr>
+        <td><span class="qt">${q.query}</span></td>
+        <td>${fmt.num(q.impressions)}</td>
+        <td>${fmt.num(q.clicks)}</td>
+        <td>${q.ctr.toFixed(1)}%</td>
+        <td>${fmt.positionBadge(q.position)}</td>
+      </tr>`).join('') || '<tr><td colspan="5" style="color:var(--muted)">No query data</td></tr>';
+
+    // Quick wins (positions 11–20)
+    const quickWins = data.queries.filter(q => q.position > 10 && q.position <= 20);
+    document.getElementById('quickWinsTable').innerHTML = quickWins.length
+      ? quickWins.slice(0,10).map(q => `
+          <tr>
+            <td><span class="qt">${q.query}</span></td>
+            <td>${fmt.positionBadge(q.position)}</td>
+            <td>${fmt.num(q.impressions)}</td>
+            <td>${fmt.num(q.clicks)}</td>
+            <td>${q.ctr.toFixed(1)}%</td>
+          </tr>`).join('')
+      : '<tr><td colspan="5" style="color:var(--muted);padding:16px 0">No keywords in positions 11–20 found.</td></tr>';
+
+    // Low CTR (impressions > 100, CTR < 5%)
+    const lowCTR = data.queries.filter(q => q.impressions > 100 && q.ctr < 5.0);
+    document.getElementById('lowCTRTable').innerHTML = lowCTR.length
+      ? lowCTR.slice(0,8).map(q => {
+          const potentialClicks = Math.round(q.impressions * 0.04 - q.clicks);
+          return `<tr>
+            <td><span class="qt">${q.query}</span></td>
+            <td>${fmt.num(q.impressions)}</td>
+            <td>${fmt.num(q.clicks)}</td>
+            <td style="color:var(--red)">${q.ctr.toFixed(1)}%</td>
+            <td><span class="qwb">+${fmt.num(potentialClicks)} clicks @ 4%</span></td>
+          </tr>`;
+        }).join('')
+      : '<tr><td colspan="5" style="color:var(--muted);padding:16px 0">No low-CTR opportunities found (good CTRs across the board!).</td></tr>';
+
+    if (lowCTR.length) {
+      const totalExtra = lowCTR.reduce((s,q) => s + Math.max(0, Math.round(q.impressions * 0.04 - q.clicks)), 0);
+      document.getElementById('lowCTRNote').textContent = `💡 Improving CTR on these ${lowCTR.length} queries to 4% would add ~${fmt.num(totalExtra)} clicks/month at zero additional ranking effort.`;
+    }
+
+    computeInsights();
+  } catch (e) {
+    console.error('Queries:', e.message);
+  }
+}
+
+// GSC Pages
+async function loadGSCPages(site, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/gsc/pages?siteUrl=${encodeURIComponent(site)}&days=${days}`);
+    document.getElementById('gscPagesTable').innerHTML = data.pages.slice(0,10).map(p => {
+      const shortUrl = p.page.replace(/^https?:\/\/[^/]+/, '') || '/';
+      return `<tr>
+        <td><span class="pt">${shortUrl}</span></td>
+        <td>${fmt.num(p.impressions)}</td>
+        <td>${fmt.num(p.clicks)}</td>
+        <td>${p.ctr.toFixed(1)}%</td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="4" style="color:var(--muted)">No data</td></tr>';
+  } catch (e) {
+    console.error('GSC Pages:', e.message);
+  }
+}
+
+// Realtime
+async function loadRealtime(pid) {
+  try {
+    const data = await apiFetch(`/api/ga4/realtime?propertyId=${pid}`);
+    document.getElementById('rtTotal').textContent = data.totalUsers ?? '—';
+    document.getElementById('rtTopPage').textContent = data.topPage ?? '—';
+
+    // Source items (keep up to 4)
+    const container = document.getElementById('rtSources');
+    container.innerHTML = (data.sources || []).slice(0,4).map(s =>
+      `<div class="rts"><div class="v">${s.users}</div><div class="l">${s.source}</div></div>
+       <div class="rtdiv"></div>`
+    ).join('');
+  } catch (e) {
+    console.error('Realtime:', e.message);
+  }
+}
+
+// PageSpeed
+async function loadPageSpeed() {
+  const url = document.getElementById('psiUrl').value.trim();
+  if (!url) return;
+  document.getElementById('cwvGrid').innerHTML = '<div style="color:var(--muted);font-size:12px;padding:20px 0">Running PageSpeed analysis… (may take 10–20 seconds)</div>';
+  document.getElementById('cardCWV').classList.add('loading');
+  try {
+    const data = await apiFetch(`/api/pagespeed?url=${encodeURIComponent(url)}`);
+    const rows = [
+      { label: 'Performance Score', value: data.score + '/100', rating: data.score >= 90 ? 'ok' : data.score >= 50 ? 'wn' : 'er' },
+      { label: 'LCP — Largest Contentful Paint', value: data.lcp, rating: data.lcpRating },
+      { label: 'CLS — Cumulative Layout Shift', value: data.cls, rating: data.clsRating },
+      { label: 'FCP — First Contentful Paint', value: data.fcp, rating: data.fcpRating },
+      { label: 'TTFB — Time to First Byte', value: data.ttfb, rating: data.ttfbRating },
+      { label: 'TBT — Total Blocking Time', value: data.tbt, rating: 'nt' },
+    ];
+    document.getElementById('cwvGrid').innerHTML = rows.map(r => {
+      const icon = r.rating === 'ok' ? '✓' : r.rating === 'wn' ? '⚠' : r.rating === 'er' ? '✗' : '—';
+      const barW = r.rating === 'ok' ? '90%' : r.rating === 'wn' ? '55%' : r.rating === 'er' ? '25%' : '50%';
+      return `<div>
+        <div class="cwvh"><span>${r.label}</span><span class="cwvs ${r.rating}">${r.value} ${icon}</span></div>
+        <div class="cwvb"><div class="cwvf ${r.rating}" style="width:${barW}"></div></div>
+      </div>`;
+    }).join('');
+    rmLoading('cardCWV');
+  } catch (e) {
+    document.getElementById('cwvGrid').innerHTML = `<div style="color:var(--red);font-size:12px">Error: ${e.message}</div>`;
+    rmLoading('cardCWV');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// SMART INSIGHTS
+// ═══════════════════════════════════════════════
+function computeInsights() {
+  const cards = [];
+
+  // 1. High impression / low CTR
+  if (state.gscQueries?.length) {
+    const lowCTR = state.gscQueries.filter(q => q.impressions > 100 && q.ctr < 5.0);
+    if (lowCTR.length) {
+      const totalExtra = lowCTR.reduce((s,q) => s + Math.max(0, Math.round(q.impressions * 0.04 - q.clicks)), 0);
+      cards.push(`
+        <div class="icard">
+          <div class="ihdr">
+            <span class="iico">🎯</span>
+            <div><div class="ititle">High Impressions, Low CTR — Fix These Titles</div>
+            <div class="isub">Could add ~${fmt.num(totalExtra)} clicks/month with better titles/metas</div></div>
+            <span class="ibadge opp">Opportunity</span>
+          </div>
+          <table>
+            <thead><tr><th>Query</th><th>Impressions</th><th>CTR</th></tr></thead>
+            <tbody>${lowCTR.slice(0,5).map(q => `
+              <tr><td><span class="qt">${q.query}</span></td><td>${fmt.num(q.impressions)}</td><td style="color:var(--red)">${q.ctr.toFixed(1)}%</td></tr>
+            `).join('')}</tbody>
+          </table>
+          <div style="margin-top:10px;font-size:11px;color:var(--muted)">💡 Add numbers, power words, and your year to meta titles. Target CTR of 4–6%.</div>
+        </div>`);
+    }
+  }
+
+  // 3. Mobile conversion gap
+  if (state.ga4Audience) {
+    const mobile = state.ga4Audience.devices.find(d => d.device === 'mobile');
+    const desktop = state.ga4Audience.devices.find(d => d.device === 'desktop');
+    if (mobile && desktop && mobile.sessions && desktop.sessions) {
+      const mobRate = (mobile.conversions / mobile.sessions) * 100;
+      const deskRate = (desktop.conversions / desktop.sessions) * 100;
+      const gap = deskRate - mobRate;
+      const totalUsers = state.ga4Audience.devices.reduce((s,d) => s + d.users, 0) || 1;
+      const mobPct = Math.round((mobile.users / totalUsers) * 100);
+      if (gap > 1) {
+        cards.push(`
+          <div class="icard">
+            <div class="ihdr">
+              <span class="iico">📱</span>
+              <div><div class="ititle">Mobile Conversion Gap — ${gap.toFixed(1)}pp Below Desktop</div>
+              <div class="isub">${mobPct}% of your traffic is mobile — fixing this has a big upside</div></div>
+              <span class="ibadge act">Action Needed</span>
+            </div>
+            <div class="cdelta" style="margin-top:0">
+              <div class="cdi"><div class="v" style="color:var(--blue)">${deskRate.toFixed(1)}%</div><div class="l">Desktop rate</div></div>
+              <div class="cdi"><div class="v" style="color:var(--red)">${mobRate.toFixed(1)}%</div><div class="l">Mobile rate</div></div>
+              <div class="cdi"><div class="v" style="color:var(--yellow)">-${gap.toFixed(1)}pp</div><div class="l">Gap</div></div>
+              <div class="cdi"><div class="v">${mobPct}%</div><div class="l">Traffic is mobile</div></div>
+            </div>
+            <div style="margin-top:12px;font-size:11px;color:var(--muted)">💡 Check mobile form usability, button sizes, page speed on mobile, and reduce friction in your conversion flow.</div>
+          </div>`);
+      }
+    }
+  }
+
+  // 4. Top organic channel insight
+  if (state.ga4Channels) {
+    const organic = state.ga4Channels.channels.find(c => c.channel === 'Organic Search');
+    if (organic && organic.pct > 0) {
+      const convRate = organic.sessions ? ((organic.conversions / organic.sessions) * 100).toFixed(1) : '—';
+      cards.push(`
+        <div class="icard">
+          <div class="ihdr">
+            <span class="iico">🔍</span>
+            <div><div class="ititle">Organic Search Drives ${organic.pct}% of Traffic</div>
+            <div class="isub">${fmt.num(organic.sessions)} sessions · ${fmt.num(organic.conversions)} conversions · ${convRate}% conv rate</div></div>
+            <span class="ibadge ${organic.pct > 40 ? 'opp' : 'wn'}">${organic.pct > 40 ? 'Strong' : 'Grow SEO'}</span>
+          </div>
+          <div style="font-size:12px;color:var(--muted);line-height:1.6">
+            ${organic.pct > 50 ? '✅ Organic is your top channel — keep investing in content and SEO.' : organic.pct > 30 ? '📈 Organic is growing — continue publishing quality content consistently.' : '💡 Organic traffic is low. Focus on keyword research, on-page SEO, and building backlinks.'}
+          </div>
+        </div>`);
+    }
+  }
+
+  if (cards.length) {
+    document.getElementById('insightsGrid').innerHTML = cards.join('');
+  }
+}
+
+// ═══════════════════════════════════════════════
+// MAIN DASHBOARD START
+// ═══════════════════════════════════════════════
+async function startDashboard() {
+  initCharts();
+  const p = state.propertyId;
+  const s = state.siteUrl;
+  const d = state.days;
+
+  // Load everything in parallel
+  await Promise.allSettled([
+    loadOverview(p, d),
+    loadChannels(p, d),
+    loadAudience(p, d),
+    loadPages(p, d),
+    loadEvents(p, d),
+    loadReferrers(p, d),
+    loadGSCOverview(s, d),
+    loadQueries(s, d),
+    loadGSCPages(s, d),
+  ]);
+
+  // Non-critical / separate
+  loadTrend(p, d);
+
+  // Realtime — initial load then poll
+  await loadRealtime(p);
+  realtimeInterval = setInterval(() => loadRealtime(p), 30000);
+}
+
+// ═══════════════════════════════════════════════
+// SIDEBAR ACTIVE LINK
+// ═══════════════════════════════════════════════
+window.addEventListener('scroll', () => {
+  const sections = document.querySelectorAll('section[id]');
+  const links = document.querySelectorAll('.nav-link');
+  const atBottom = window.innerHeight + window.scrollY >= document.body.scrollHeight - 10;
+  let current = sections[0]?.id || '';
+  if (atBottom) {
+    current = sections[sections.length - 1]?.id || current;
+  } else {
+    sections.forEach(s => {
+      if (s.getBoundingClientRect().top <= 90) current = s.id;
+    });
+  }
+  links.forEach(l => {
+    l.classList.toggle('active', l.getAttribute('href') === '#' + current);
+  });
+}, { passive: true });
+
+// Cleanup on unload
+window.addEventListener('beforeunload', () => {
+  if (realtimeInterval) clearInterval(realtimeInterval);
+});
+
+// ═══════════════════════════════════════════════
+// DATE RANGE PICKER
+// ═══════════════════════════════════════════════
+function toggleDateDropdown(e) {
+  e.stopPropagation();
+  document.getElementById('dateDropdown').classList.toggle('open');
+}
+
+function selectDays(days) {
+  state.days = days;
+  const labels = { 7: 'Last 7 days', 30: 'Last 30 days', 90: 'Last 90 days' };
+  document.getElementById('datePillLabel').childNodes[0].textContent = `${labels[days]} ▾`;
+  document.querySelectorAll('.date-opt').forEach(el => {
+    el.classList.toggle('active', parseInt(el.dataset.days) === days);
+  });
+  document.getElementById('dateDropdown').classList.remove('open');
+  reloadAll();
+}
+
+document.addEventListener('click', () => {
+  document.getElementById('dateDropdown')?.classList.remove('open');
+});
+
+async function reloadAll() {
+  const p = state.propertyId, s = state.siteUrl, d = state.days;
+  await Promise.allSettled([
+    loadOverview(p, d),
+    loadChannels(p, d),
+    loadAudience(p, d),
+    loadPages(p, d),
+    loadEvents(p, d),
+    loadReferrers(p, d),
+    loadGSCOverview(s, d),
+    loadQueries(s, d),
+    loadGSCPages(s, d),
+  ]);
+  loadTrend(p, d);
+}
+
+// ═══════════════════════════════════════════════
+// BOOT
+// ═══════════════════════════════════════════════
+init();
+</script>
+</body>
+</html>
