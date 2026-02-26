@@ -167,6 +167,18 @@ h1 span{background:linear-gradient(135deg,#6366f1,#a5b4fc);-webkit-background-cl
 .step-desc{font-size:13px;color:var(--muted);line-height:1.6}
 .step-code{display:inline-block;background:#252840;border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:12px;font-family:monospace;color:var(--dim);margin-top:8px}
 
+/* ── ARTICLES ── */
+.articles{padding:80px 48px;max-width:900px;margin:0 auto}
+.art-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:0}
+.art-card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:28px;text-decoration:none;transition:border-color .2s,transform .2s}
+.art-card:hover{border-color:#6366f155;transform:translateY(-2px);text-decoration:none}
+.art-card-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:3px 10px;border-radius:20px;margin-bottom:14px;width:fit-content}
+.art-card-tag.gsc{background:#1a3a2a;color:#4ade80}
+.art-card-tag.ga{background:#1e2a4a;color:#60a5fa}
+.art-card-title{font-size:17px;font-weight:700;color:#f8fafc;line-height:1.3;margin-bottom:10px}
+.art-card-desc{font-size:13px;color:var(--muted);line-height:1.65;flex:1}
+.art-card-read{display:flex;align-items:center;gap:6px;margin-top:16px;font-size:12px;color:var(--accent);font-weight:600}
+
 /* ── CTA ── */
 .cta-section{padding:80px 48px;text-align:center;max-width:700px;margin:0 auto}
 .cta-card{background:linear-gradient(135deg,#1a1d2e,#1e2235);border:1px solid var(--border);border-radius:20px;padding:56px 48px;position:relative;overflow:hidden}
@@ -186,8 +198,9 @@ footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-i
 
 @media(max-width:768px){
   nav,footer{padding:0 20px}
-  .hero,.features,.how,.cta-section,.preview-wrap{padding-left:20px;padding-right:20px}
+  .hero,.features,.how,.cta-section,.preview-wrap,.articles{padding-left:20px;padding-right:20px}
   .feat-grid{grid-template-columns:1fr}
+  .art-grid{grid-template-columns:1fr}
   h1{letter-spacing:-1px}
   .stats-strip{gap:24px;padding:30px 20px}
   .mock-g4{grid-template-columns:repeat(2,1fr)}
@@ -447,6 +460,27 @@ footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-i
   </div>
 </section>
 
+<!-- ── ARTICLES ── -->
+<section class="articles">
+  <div class="section-label">Guides</div>
+  <h2 class="section-title">Get set up with Google's tools</h2>
+  <p class="section-sub">Step-by-step guides to connecting the data sources that power your dashboard.</p>
+  <div class="art-grid">
+    <a class="art-card" href="/articles/connect-google-analytics-4">
+      <span class="art-card-tag ga">📊 Google Analytics</span>
+      <div class="art-card-title">How to Connect Google Analytics 4 to Your Website</div>
+      <div class="art-card-desc">Create a GA4 property, install the tracking code, and verify data is flowing. Covers direct HTML, Google Tag Manager, and all major CMS platforms.</div>
+      <div class="art-card-read">Read guide →</div>
+    </a>
+    <a class="art-card" href="/articles/connect-google-search-console">
+      <span class="art-card-tag gsc">🔎 Search Console</span>
+      <div class="art-card-title">How to Connect Google Search Console to Your Website</div>
+      <div class="art-card-desc">Add your site, verify ownership via DNS record or HTML tag, submit your sitemap, and start tracking keyword rankings and search impressions.</div>
+      <div class="art-card-read">Read guide →</div>
+    </a>
+  </div>
+</section>
+
 <!-- ── CTA ── -->
 <div class="cta-section">
   <div class="cta-card">
@@ -474,6 +508,8 @@ footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-i
   <div class="footer-note">🚀 A <a href="https://lighthouselaunch.com" target="_blank" style="color:var(--accent);text-decoration:none">Lighthouse Launch</a> Tool</div>
   <div class="footer-links">
     <a href="/auth/login">Sign in</a>
+    <a href="/articles/connect-google-analytics-4">GA4 Guide</a>
+    <a href="/articles/connect-google-search-console">GSC Guide</a>
     <a href="https://lighthouselaunch.com" target="_blank">Lighthouse Launch</a>
   </div>
 </footer>
