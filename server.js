@@ -117,7 +117,7 @@ app.get('/auth/callback', async (req, res) => {
       picture: user.picture,
     };
 
-    res.redirect('/');
+    res.redirect('/app');
   } catch (err) {
     console.error('OAuth callback error:', err.message);
     res.redirect('/?error=auth_failed');
@@ -145,6 +145,17 @@ app.post('/api/settings', requireAuth, (req, res) => {
 
 app.get('/auth/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/'));
+});
+
+// ─── Page routes ─────────────────────────────────────────────────────────────
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'landing.html'));
+});
+
+app.get('/app', (req, res) => {
+  if (!req.session.tokens) return res.redirect('/');
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // ─── Health check ─────────────────────────────────────────────────────────────

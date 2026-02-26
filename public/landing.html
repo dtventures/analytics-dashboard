@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Primary Meta -->
+<title>AnalyticsDash — Your Complete Analytics Command Center</title>
+<meta name="description" content="One dashboard for all your website analytics. Google Analytics 4, Search Console, real-time traffic, SEO insights, and smart recommendations — all in one place.">
+<meta name="author" content="AnalyticsDash">
+<meta name="robots" content="index, follow">
+
+<!-- Canonical -->
+<link rel="canonical" href="https://analyticsdash.lighthouselaunch.com">
+
+<!-- Open Graph (Facebook, LinkedIn, iMessage, Slack) -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://analyticsdash.lighthouselaunch.com">
+<meta property="og:title" content="AnalyticsDash — Your Complete Analytics Command Center">
+<meta property="og:description" content="One dashboard for all your website analytics. GA4, Search Console, real-time traffic, SEO quick wins, and smart recommendations — all in one dark, beautiful interface.">
+<meta property="og:image" content="https://analyticsdash.lighthouselaunch.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="AnalyticsDash">
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://analyticsdash.lighthouselaunch.com">
+<meta name="twitter:title" content="AnalyticsDash — Your Complete Analytics Command Center">
+<meta name="twitter:description" content="One dashboard for all your website analytics. GA4, Search Console, real-time traffic, SEO quick wins, and smart recommendations.">
+<meta name="twitter:image" content="https://analyticsdash.lighthouselaunch.com/og-image.png">
+
+<!-- Favicon -->
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="apple-touch-icon" href="/favicon.svg">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;--surface:#1a1d2e;--border:#2d3148;--subtle:#1e2235;
+  --text:#e2e8f0;--muted:#64748b;--dim:#94a3b8;
+  --accent:#6366f1;--green:#4ade80;--blue:#60a5fa;--purple:#c084fc;
+  --cyan:#22d3ee;--yellow:#fbbf24;--red:#f87171;
+}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;overflow-x:hidden}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,17,23,0.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(45,49,72,0.6)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo svg{width:30px;height:30px;flex-shrink:0}
+.nav-logo-text{font-size:16px;font-weight:700;color:#f8fafc}
+.nav-logo-text span{color:var(--accent)}
+.nav-cta{display:flex;align-items:center;gap:10px}
+.btn-signin{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:opacity .15s}
+.btn-signin:hover{opacity:.88}
+.btn-signin-ghost{background:transparent;border:1px solid var(--border);color:var(--dim);border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600;cursor:pointer;text-decoration:none;transition:all .15s}
+.btn-signin-ghost:hover{border-color:var(--accent);color:var(--text)}
+
+/* ── HERO ── */
+.hero{padding:140px 48px 80px;text-align:center;max-width:900px;margin:0 auto}
+.hero-badge{display:inline-flex;align-items:center;gap:6px;background:#6366f120;border:1px solid #6366f140;border-radius:20px;padding:5px 14px;font-size:12px;font-weight:600;color:var(--accent);margin-bottom:28px}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+h1{font-size:clamp(36px,5vw,64px);font-weight:800;color:#f8fafc;line-height:1.1;letter-spacing:-2px;margin-bottom:22px}
+h1 span{background:linear-gradient(135deg,#6366f1,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:18px;color:var(--dim);line-height:1.6;max-width:600px;margin:0 auto 36px}
+.hero-btns{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap}
+.btn-primary{display:inline-flex;align-items:center;gap:10px;background:var(--accent);color:#fff;border:none;border-radius:10px;padding:14px 28px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .2s;box-shadow:0 0 40px #6366f155}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 4px 60px #6366f166}
+.btn-primary svg{width:18px;height:18px;flex-shrink:0}
+.hero-note{font-size:12px;color:var(--muted);margin-top:14px}
+
+/* ── DASHBOARD PREVIEW ── */
+.preview-wrap{padding:0 48px 80px;max-width:1200px;margin:0 auto}
+.browser-frame{border-radius:14px;overflow:hidden;border:1px solid var(--border);box-shadow:0 40px 120px #00000088,0 0 0 1px #6366f122;background:var(--surface)}
+.browser-bar{background:#13151f;padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.b-dots{display:flex;gap:5px}
+.b-dot{width:10px;height:10px;border-radius:50%}
+.b-dot.r{background:#ff5f57}
+.b-dot.y{background:#febc2e}
+.b-dot.g{background:#28c840}
+.b-addr{flex:1;background:#1e2235;border-radius:5px;padding:4px 12px;font-size:11px;color:var(--muted);font-family:monospace}
+.mock-dash{display:flex;height:480px;overflow:hidden}
+
+/* mock sidebar */
+.mock-sb{width:130px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:10px 0}
+.mock-sb-g{font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:10px 10px 3px}
+.mock-sb-l{display:flex;align-items:center;gap:5px;padding:5px 10px;font-size:9px;color:var(--muted);border-left:2px solid transparent}
+.mock-sb-l.a{color:var(--accent);border-left-color:var(--accent);background:#1e2035}
+
+/* mock content */
+.mock-content{flex:1;padding:14px;overflow:hidden;background:var(--bg)}
+.mock-rt{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:10px 14px;display:flex;align-items:center;gap:14px;margin-bottom:10px}
+.mock-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.mock-rtnum{font-size:18px;font-weight:700;color:#f8fafc}
+.mock-rtl{font-size:8px;color:var(--muted)}
+.mock-rtdiv{width:1px;height:24px;background:var(--border)}
+.mock-rts .v{font-size:11px;font-weight:700}
+.mock-rts .l{font-size:7px;color:var(--muted);margin-top:1px}
+.mock-g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.mock-card{background:var(--surface);border:1px solid var(--border);border-radius:7px;padding:10px}
+.mock-ct{font-size:7px;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px}
+.mock-sv{font-size:18px;font-weight:700;color:#f8fafc;letter-spacing:-0.5px}
+.mock-sc{display:inline-flex;align-items:center;font-size:8px;font-weight:600;padding:1px 5px;border-radius:3px;margin-top:4px}
+.mock-sc.up{background:#14532d33;color:var(--green)}
+.mock-sc.dn{background:#7f1d1d33;color:var(--red)}
+.mock-g2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.mock-chart-ph{background:#252840;border-radius:4px;height:80px;position:relative;overflow:hidden;display:flex;align-items:flex-end;gap:2px;padding:8px 6px 0}
+.mock-bar{border-radius:2px 2px 0 0;flex:1}
+.mock-line{position:absolute;inset:8px 6px 0;display:flex;align-items:flex-end}
+.mock-line svg{width:100%;height:100%}
+.mock-bl{display:flex;flex-direction:column;gap:5px;padding:8px}
+.mock-bitem{display:flex;flex-direction:column;gap:2px}
+.mock-bh{display:flex;justify-content:space-between;font-size:7px;color:#cbd5e1}
+.mock-btrack{height:3px;background:#1e2235;border-radius:2px;overflow:hidden}
+.mock-bfill{height:100%;border-radius:2px}
+.mock-tbl{width:100%;border-collapse:collapse}
+.mock-tbl th{font-size:7px;color:var(--muted);padding:0 0 4px;text-align:left;border-bottom:1px solid var(--subtle)}
+.mock-tbl td{font-size:8px;padding:4px 0;color:#cbd5e1;border-bottom:1px solid #1e2235}
+.mock-tbl tr:last-child td{border:none}
+.mock-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 14px;height:36px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mock-pills{display:flex;gap:4px}
+.mock-pill{padding:2px 6px;border-radius:20px;font-size:7px;font-weight:700}
+.mock-pill.ga{background:#1e3a5f;color:#60a5fa}
+.mock-pill.gsc{background:#1a3a2a;color:#4ade80}
+
+/* ── STATS STRIP ── */
+.stats-strip{display:flex;justify-content:center;gap:48px;padding:40px 48px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);flex-wrap:wrap;max-width:900px;margin:0 auto}
+.stat-item{text-align:center}
+.stat-n{font-size:32px;font-weight:800;color:#f8fafc;letter-spacing:-1px}
+.stat-n span{color:var(--accent)}
+.stat-l{font-size:12px;color:var(--muted);margin-top:3px}
+
+/* ── FEATURES ── */
+.features{padding:80px 48px;max-width:1100px;margin:0 auto}
+.section-label{text-align:center;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--accent);margin-bottom:14px}
+.section-title{text-align:center;font-size:clamp(26px,3vw,38px);font-weight:800;color:#f8fafc;letter-spacing:-1px;margin-bottom:12px}
+.section-sub{text-align:center;font-size:15px;color:var(--dim);max-width:520px;margin:0 auto 48px;line-height:1.6}
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px;transition:border-color .2s}
+.feat-card:hover{border-color:#6366f155}
+.feat-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:14px}
+.feat-icon.ga{background:#1e3a5f33}
+.feat-icon.gsc{background:#1a3a2a33}
+.feat-icon.rt{background:#14532d33}
+.feat-icon.ins{background:#3a1a5f33}
+.feat-icon.seo{background:#3a2a1a33}
+.feat-icon.sec{background:#252840}
+.feat-title{font-size:15px;font-weight:700;color:#f8fafc;margin-bottom:7px}
+.feat-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.feat-tags{display:flex;gap:5px;margin-top:12px;flex-wrap:wrap}
+.feat-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:#252840;color:var(--dim)}
+
+/* ── HOW IT WORKS ── */
+.how{padding:80px 48px;max-width:900px;margin:0 auto}
+.steps{display:flex;flex-direction:column;gap:0}
+.step{display:flex;gap:24px;position:relative;padding-bottom:40px}
+.step:last-child{padding-bottom:0}
+.step-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+.step-num{width:36px;height:36px;border-radius:50%;background:var(--accent);color:#fff;font-size:14px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-line{width:1px;flex:1;background:var(--border);margin-top:6px}
+.step:last-child .step-line{display:none}
+.step-body{padding-top:6px}
+.step-title{font-size:16px;font-weight:700;color:#f8fafc;margin-bottom:6px}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6}
+.step-code{display:inline-block;background:#252840;border:1px solid var(--border);border-radius:6px;padding:3px 10px;font-size:12px;font-family:monospace;color:var(--dim);margin-top:8px}
+
+/* ── CTA ── */
+.cta-section{padding:80px 48px;text-align:center;max-width:700px;margin:0 auto}
+.cta-card{background:linear-gradient(135deg,#1a1d2e,#1e2235);border:1px solid var(--border);border-radius:20px;padding:56px 48px;position:relative;overflow:hidden}
+.cta-card::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,#6366f122,transparent 70%);pointer-events:none}
+.cta-card h2{font-size:32px;font-weight:800;color:#f8fafc;letter-spacing:-1px;margin-bottom:12px}
+.cta-card p{font-size:15px;color:var(--dim);margin-bottom:32px;line-height:1.6}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.footer-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
+.footer-logo-text{font-size:13px;font-weight:700;color:var(--dim)}
+.footer-logo-text span{color:var(--accent)}
+.footer-note{font-size:12px;color:var(--muted)}
+.footer-links{display:flex;gap:20px}
+.footer-links a{font-size:12px;color:var(--muted);text-decoration:none}
+.footer-links a:hover{color:var(--text)}
+
+@media(max-width:768px){
+  nav,footer{padding:0 20px}
+  .hero,.features,.how,.cta-section,.preview-wrap{padding-left:20px;padding-right:20px}
+  .feat-grid{grid-template-columns:1fr}
+  h1{letter-spacing:-1px}
+  .stats-strip{gap:24px;padding:30px 20px}
+  .mock-g4{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav>
+  <a class="nav-logo" href="/">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="8" fill="#6366f1"/>
+      <rect x="5" y="20" width="5" height="8" rx="1.5" fill="white"/>
+      <rect x="13.5" y="13" width="5" height="15" rx="1.5" fill="white"/>
+      <rect x="22" y="7" width="5" height="21" rx="1.5" fill="white"/>
+    </svg>
+    <span class="nav-logo-text">Analytics<span>Dash</span></span>
+  </a>
+  <div class="nav-cta">
+    <a class="btn-signin-ghost" href="/auth/login">Sign in</a>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-badge">
+    <div class="hero-badge-dot"></div>
+    Powered by GA4 + Google Search Console
+  </div>
+  <h1>Your complete<br><span>analytics command center</span></h1>
+  <p class="hero-sub">Stop switching between tabs. See your GA4 traffic, Search Console rankings, real-time visitors, and smart SEO insights — all in one beautiful dashboard.</p>
+  <div class="hero-btns">
+    <a class="btn-primary" href="/auth/login">
+      <svg viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Sign in with Google
+    </a>
+  </div>
+  <p class="hero-note">Free to use · Read-only access · Your data never leaves your account</p>
+</section>
+
+<!-- ── DASHBOARD PREVIEW ── -->
+<div class="preview-wrap">
+  <div class="browser-frame">
+    <div class="browser-bar">
+      <div class="b-dots">
+        <div class="b-dot r"></div>
+        <div class="b-dot y"></div>
+        <div class="b-dot g"></div>
+      </div>
+      <div class="b-addr">analyticsdash.lighthouselaunch.com</div>
+      <div class="mock-pills">
+        <span class="mock-pill ga">GA4</span>
+        <span class="mock-pill gsc">GSC</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column">
+      <!-- mock header -->
+      <div class="mock-header">
+        <span style="font-size:12px;font-weight:700;color:#f8fafc">Analytics <span style="color:#6366f1">Dashboard</span></span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="background:#252840;border:1px solid #3d4266;border-radius:5px;padding:3px 8px;font-size:9px;color:#94a3b8">Last 30 days ▾</div>
+          <div style="width:22px;height:22px;border-radius:50%;background:#6366f1;display:flex;align-items:center;justify-content:center;font-size:10px">D</div>
+        </div>
+      </div>
+      <div class="mock-dash">
+        <!-- sidebar -->
+        <div class="mock-sb">
+          <div class="mock-sb-g">Analytics</div>
+          <div class="mock-sb-l a">🔴 Real-Time</div>
+          <div class="mock-sb-l">📊 Overview</div>
+          <div class="mock-sb-l">🔍 Acquisition</div>
+          <div class="mock-sb-g">Search</div>
+          <div class="mock-sb-l">🔎 Search Perf</div>
+          <div class="mock-sb-l">🏆 Quick Wins</div>
+          <div class="mock-sb-g">Users</div>
+          <div class="mock-sb-l">👥 Audience</div>
+          <div class="mock-sb-l">📄 Content</div>
+          <div class="mock-sb-l">✅ Conversions</div>
+          <div class="mock-sb-g">Intelligence</div>
+          <div class="mock-sb-l">💡 Insights</div>
+        </div>
+        <!-- content -->
+        <div class="mock-content">
+          <!-- realtime -->
+          <div class="mock-rt">
+            <div class="mock-dot"></div>
+            <div><div class="mock-rtnum">47</div><div class="mock-rtl">active users now</div></div>
+            <div class="mock-rtdiv"></div>
+            <div class="mock-rts"><div class="v" style="color:#f8fafc;font-size:11px">23</div><div class="l">Organic</div></div>
+            <div class="mock-rtdiv"></div>
+            <div class="mock-rts"><div class="v" style="color:#f8fafc;font-size:11px">14</div><div class="l">Direct</div></div>
+            <div class="mock-rtdiv"></div>
+            <div class="mock-rts"><div class="v" style="color:#f8fafc;font-size:11px">/blog/seo-tips</div><div class="l">Top Page</div></div>
+          </div>
+          <!-- stat cards -->
+          <div class="mock-g4">
+            <div class="mock-card">
+              <div class="mock-ct">Total Users <span style="background:#1e3a5f;color:#60a5fa;font-size:7px;padding:1px 4px;border-radius:3px">GA4</span></div>
+              <div class="mock-sv">24.8K</div>
+              <div class="mock-sc up">↑ 12.4%</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-ct">Sessions <span style="background:#1e3a5f;color:#60a5fa;font-size:7px;padding:1px 4px;border-radius:3px">GA4</span></div>
+              <div class="mock-sv">38.2K</div>
+              <div class="mock-sc up">↑ 8.7%</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-ct">Impressions <span style="background:#1a3a2a;color:#4ade80;font-size:7px;padding:1px 4px;border-radius:3px">GSC</span></div>
+              <div class="mock-sv">142K</div>
+              <div class="mock-sc up">↑ 22.1%</div>
+            </div>
+            <div class="mock-card">
+              <div class="mock-ct">Avg Position <span style="background:#1a3a2a;color:#4ade80;font-size:7px;padding:1px 4px;border-radius:3px">GSC</span></div>
+              <div class="mock-sv">6.4</div>
+              <div class="mock-sc up">↑ improved</div>
+            </div>
+          </div>
+          <!-- chart + bars row -->
+          <div class="mock-g2">
+            <div class="mock-card" style="padding:8px">
+              <div class="mock-ct" style="margin-bottom:4px">Traffic Trend</div>
+              <div class="mock-chart-ph">
+                <svg viewBox="0 0 200 60" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%">
+                  <defs>
+                    <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.4"/>
+                      <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0,45 C20,40 30,30 50,25 C70,20 80,35 100,28 C120,22 130,15 150,18 C170,21 180,10 200,8 L200,60 L0,60 Z" fill="url(#g1)"/>
+                  <path d="M0,45 C20,40 30,30 50,25 C70,20 80,35 100,28 C120,22 130,15 150,18 C170,21 180,10 200,8" fill="none" stroke="#6366f1" stroke-width="1.5"/>
+                  <path d="M0,50 C20,46 30,38 50,34 C70,30 80,40 100,36 C120,32 130,25 150,26 C170,27 180,18 200,16" fill="none" stroke="#60a5fa" stroke-width="1" stroke-dasharray="3,2"/>
+                </svg>
+              </div>
+            </div>
+            <div class="mock-card" style="padding:8px">
+              <div class="mock-ct" style="margin-bottom:4px">Traffic by Channel</div>
+              <div class="mock-bl">
+                <div class="mock-bitem">
+                  <div class="mock-bh"><span style="color:#4ade80">Organic Search</span><span>45%</span></div>
+                  <div class="mock-btrack"><div class="mock-bfill" style="width:45%;background:#4ade80"></div></div>
+                </div>
+                <div class="mock-bitem">
+                  <div class="mock-bh"><span style="color:#60a5fa">Direct</span><span>24%</span></div>
+                  <div class="mock-btrack"><div class="mock-bfill" style="width:24%;background:#60a5fa"></div></div>
+                </div>
+                <div class="mock-bitem">
+                  <div class="mock-bh"><span style="color:#c084fc">Social</span><span>15%</span></div>
+                  <div class="mock-btrack"><div class="mock-bfill" style="width:15%;background:#c084fc"></div></div>
+                </div>
+                <div class="mock-bitem">
+                  <div class="mock-bh"><span style="color:#fb923c">Referral</span><span>9%</span></div>
+                  <div class="mock-btrack"><div class="mock-bfill" style="width:9%;background:#fb923c"></div></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ── STATS ── -->
+<div class="stats-strip">
+  <div class="stat-item">
+    <div class="stat-n">10<span>+</span></div>
+    <div class="stat-l">Data sources in one view</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-n">30<span>s</span></div>
+    <div class="stat-l">Realtime refresh rate</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-n">0<span>$</span></div>
+    <div class="stat-l">Cost to run</div>
+  </div>
+  <div class="stat-item">
+    <div class="stat-n">100<span>%</span></div>
+    <div class="stat-l">Your data, your server</div>
+  </div>
+</div>
+
+<!-- ── FEATURES ── -->
+<section class="features">
+  <div class="section-label">Features</div>
+  <h2 class="section-title">Everything you actually need</h2>
+  <p class="section-sub">No fluff, no bloat. Just the metrics that matter for growing your website.</p>
+  <div class="feat-grid">
+    <div class="feat-card">
+      <div class="feat-icon ga">📊</div>
+      <div class="feat-title">Google Analytics 4</div>
+      <div class="feat-desc">Users, sessions, engagement rate, bounce rate, conversions, and channel breakdown — all with period-over-period comparison.</div>
+      <div class="feat-tags"><span class="feat-tag">Real-time</span><span class="feat-tag">30/90 days</span><span class="feat-tag">Channels</span></div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon gsc">🔎</div>
+      <div class="feat-title">Search Console</div>
+      <div class="feat-desc">Impressions, clicks, average position, CTR by query and page. See exactly which keywords drive your traffic from Google.</div>
+      <div class="feat-tags"><span class="feat-tag">Top queries</span><span class="feat-tag">By device</span><span class="feat-tag">By page</span></div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon rt">🔴</div>
+      <div class="feat-title">Real-Time Visitors</div>
+      <div class="feat-desc">Live active user count by traffic source and top pages — auto-refreshes every 30 seconds so you always have a pulse on your site.</div>
+      <div class="feat-tags"><span class="feat-tag">Auto-refresh</span><span class="feat-tag">By source</span></div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon ins">💡</div>
+      <div class="feat-title">Smart Insights</div>
+      <div class="feat-desc">Auto-calculated opportunities: high impression / low CTR queries, mobile conversion gaps, and organic channel performance.</div>
+      <div class="feat-tags"><span class="feat-tag">SEO wins</span><span class="feat-tag">CTR gaps</span><span class="feat-tag">Mobile</span></div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon seo">⚡</div>
+      <div class="feat-title">Quick Win Keywords</div>
+      <div class="feat-desc">Automatically surfaces all your keywords sitting in positions 11–20 — one push from page 1. Sorted by impressions to prioritize impact.</div>
+      <div class="feat-tags"><span class="feat-tag">Positions 11–20</span><span class="feat-tag">GSC data</span></div>
+    </div>
+    <div class="feat-card">
+      <div class="feat-icon sec">🔒</div>
+      <div class="feat-title">Private by Design</div>
+      <div class="feat-desc">Runs on your own server. OAuth tokens stored in your session. Read-only API access. Your analytics data never touches a third party.</div>
+      <div class="feat-tags"><span class="feat-tag">Self-hosted</span><span class="feat-tag">Read-only</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── HOW IT WORKS ── -->
+<section class="how">
+  <div class="section-label">Setup</div>
+  <h2 class="section-title" style="text-align:center">Up in 5 minutes</h2>
+  <p class="section-sub" style="text-align:center;margin-bottom:40px">No API keys to manage. Just sign in with Google and pick your property.</p>
+  <div class="steps">
+    <div class="step">
+      <div class="step-left"><div class="step-num">1</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Sign in with Google</div>
+        <div class="step-desc">Click "Sign in with Google" and grant read-only access to your Analytics and Search Console data. No credit card, no account creation.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">2</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">Select your property</div>
+        <div class="step-desc">Choose which GA4 property and Search Console site to connect. The dashboard pulls all your properties automatically from your Google account.</div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-left"><div class="step-num">3</div><div class="step-line"></div></div>
+      <div class="step-body">
+        <div class="step-title">See your real data instantly</div>
+        <div class="step-desc">All sections load in parallel. Real-time updates every 30 seconds. Switch between 7, 30, and 90 day ranges with one click.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CTA ── -->
+<div class="cta-section">
+  <div class="cta-card">
+    <h2>Ready to see your real numbers?</h2>
+    <p>Sign in with your Google account and have your full analytics dashboard running in under a minute.</p>
+    <a class="btn-primary" href="/auth/login">
+      <svg viewBox="0 0 24 24" style="width:18px;height:18px"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Sign in with Google — it's free
+    </a>
+    <p style="font-size:12px;color:var(--muted);margin-top:16px">Read-only access · No data stored · Disconnect anytime</p>
+  </div>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <a class="footer-logo" href="/">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px">
+      <rect width="32" height="32" rx="8" fill="#6366f1"/>
+      <rect x="5" y="20" width="5" height="8" rx="1.5" fill="white"/>
+      <rect x="13.5" y="13" width="5" height="15" rx="1.5" fill="white"/>
+      <rect x="22" y="7" width="5" height="21" rx="1.5" fill="white"/>
+    </svg>
+    <span class="footer-logo-text">Analytics<span>Dash</span></span>
+  </a>
+  <div class="footer-note">A <a href="https://lighthouselaunch.com" target="_blank" style="color:var(--accent);text-decoration:none">LighthouseLaunch</a> tool</div>
+  <div class="footer-links">
+    <a href="/auth/login">Sign in</a>
+    <a href="https://lighthouselaunch.com" target="_blank">LighthouseLaunch</a>
+  </div>
+</footer>
+
+</body>
+</html>
