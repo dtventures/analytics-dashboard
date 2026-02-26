@@ -28,15 +28,6 @@ const SCOPES = [
 
 app.set('trust proxy', 1); // trust Railway's load balancer
 
-// Force HTTPS in production only (skip on localhost)
-app.use((req, res, next) => {
-  const proto = (req.headers['x-forwarded-proto'] || '').split(',')[0].trim();
-  const host = req.headers.host || '';
-  if (proto === 'http' && !host.includes('localhost')) {
-    return res.redirect(301, 'https://' + host + req.url);
-  }
-  next();
-});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
