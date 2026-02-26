@@ -40,6 +40,15 @@ app.use((req, res, next) => {
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Article routes before express.static so they're matched first
+app.get('/articles/:slug', (req, res) => {
+  const slug = req.params.slug.replace(/[^a-z0-9-]/g, '');
+  res.sendFile(path.join(__dirname, 'public', 'articles', slug + '.html'), (err) => {
+    if (err) res.status(404).send('Article not found');
+  });
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
@@ -160,13 +169,6 @@ app.get('/app', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'app.html'));
 });
 
-app.get('/articles/connect-google-analytics-4', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'articles', 'connect-google-analytics-4.html'));
-});
-
-app.get('/articles/connect-google-search-console', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'articles', 'connect-google-search-console.html'));
-});
 
 // ─── Health check ─────────────────────────────────────────────────────────────
 
