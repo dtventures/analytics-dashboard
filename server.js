@@ -155,7 +155,7 @@ app.get('/', (req, res) => {
 
 app.get('/app', (req, res) => {
   if (!req.session.tokens) return res.redirect('/');
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.sendFile(path.join(__dirname, 'public', 'app.html'));
 });
 
 // ─── Health check ─────────────────────────────────────────────────────────────
