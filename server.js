@@ -28,10 +28,11 @@ const SCOPES = [
 
 app.set('trust proxy', 1); // trust Railway's load balancer
 
-// Force HTTPS in production (Railway terminates SSL and sets this header)
+// Force HTTPS in production only (skip on localhost)
 app.use((req, res, next) => {
-  if (req.headers['x-forwarded-proto'] === 'http') {
-    return res.redirect(301, 'https://' + req.headers.host + req.url);
+  const host = req.headers.host || '';
+  if (!host.includes('localhost') && !req.secure) {
+    return res.redirect(301, 'https://' + host + req.url);
   }
   next();
 });
