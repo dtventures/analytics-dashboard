@@ -344,6 +344,25 @@ tr:hover td{color:#f1f5f9}
 
 /* Error */
 .err-msg{font-size:12px;color:var(--red);margin-top:8px;padding:8px;background:#7f1d1d22;border-radius:6px}
+
+/* INDEX COVERAGE */
+.idx-form{display:flex;gap:8px;margin-bottom:13px}
+.idx-input{flex:1;background:#252840;border:1px solid var(--border);color:var(--text);border-radius:7px;padding:7px 11px;font-size:12px;font-family:inherit}
+.idx-input:focus{outline:none;border-color:var(--accent)}
+.idx-check-btn{background:var(--accent);color:#fff;border:none;border-radius:7px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap;transition:opacity .15s}
+.idx-check-btn:hover{opacity:.85}
+.idx-check-btn:disabled{opacity:.5;cursor:not-allowed}
+.verdict-ok{color:var(--green);font-weight:700}
+.verdict-no{color:var(--red);font-weight:700}
+.verdict-un{color:var(--yellow);font-weight:700}
+.gsc-link-btn{display:inline-flex;align-items:center;gap:5px;background:#1e3a5f33;color:var(--blue);border:1px solid #1e3a5f55;border-radius:5px;padding:4px 10px;font-size:11px;font-weight:600;text-decoration:none;transition:background .15s}
+.gsc-link-btn:hover{background:#1e3a5f66}
+.sitemap-row{display:flex;align-items:center;justify-content:space-between;background:#252840;border-radius:8px;padding:10px 13px;margin-bottom:7px}
+.sitemap-path{font-size:11px;color:var(--dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:220px}
+.sitemap-counts{display:flex;gap:14px;flex-shrink:0}
+.sitemap-counts .sc-item{text-align:center}
+.sitemap-counts .sc-item .n{font-size:14px;font-weight:700;color:#f8fafc}
+.sitemap-counts .sc-item .l{font-size:9px;color:var(--muted)}
 </style>
 </head>
 <body>
@@ -427,6 +446,7 @@ tr:hover td{color:#f1f5f9}
   <div class="nav-group">Search</div>
   <a href="#search" class="nav-link"><span class="nav-icon">🔎</span>Search Performance</a>
   <a href="#keywords" class="nav-link"><span class="nav-icon">🏆</span>Quick Wins</a>
+  <a href="#indexcoverage" class="nav-link"><span class="nav-icon">🗂️</span>Index Coverage</a>
 
   <div class="nav-group">Users</div>
   <a href="#audience" class="nav-link"><span class="nav-icon">👥</span>Audience</a>
@@ -536,6 +556,12 @@ tr:hover td{color:#f1f5f9}
   <div class="ct">Search Impressions vs Clicks — 30 Days <span class="stag gsc">GSC</span></div>
   <div class="cw" style="height:180px"><canvas id="chartSearchPerf"></canvas></div>
 </div>
+
+<!-- Position trend chart -->
+<div class="card mt13">
+  <div class="ct">Avg Search Position Over Time <span class="stag gsc">GSC</span> <span style="font-size:10px;color:var(--muted);font-weight:400;text-transform:none;letter-spacing:0">↓ lower = better ranking</span></div>
+  <div class="cw" style="height:160px"><canvas id="chartPosTrend"></canvas></div>
+</div>
 </section>
 
 <!-- ═══ QUICK WINS ═══ -->
@@ -556,6 +582,29 @@ tr:hover td{color:#f1f5f9}
     <tbody id="lowCTRTable"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
   </table>
   <div style="margin-top:10px;font-size:11px;color:var(--muted)" id="lowCTRNote"></div>
+</div>
+</section>
+
+<!-- ═══ INDEX COVERAGE ═══ -->
+<section id="indexcoverage">
+<div class="sl">Index Coverage — Is Google Finding Your Pages?</div>
+<div class="g2">
+
+  <div class="card" id="cardSitemaps">
+    <div class="ct">Sitemaps <span class="stag gsc">GSC</span></div>
+    <div id="sitemapsList"><div style="color:var(--muted);font-size:12px;padding:20px 0;text-align:center">Loading…</div></div>
+  </div>
+
+  <div class="card" id="cardInspect">
+    <div class="ct">Check & Submit URLs <span class="stag gsc">GSC</span></div>
+    <div class="idx-form">
+      <input class="idx-input" id="inspectInput" type="url" placeholder="https://lighthouselaunch.com/blog/…">
+      <button class="idx-check-btn" id="inspectBtn" onclick="checkUrl()">Check</button>
+    </div>
+    <div id="inspectResult" style="min-height:60px"></div>
+    <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.6">💡 If a page shows as <strong style="color:var(--red)">Not Indexed</strong>, click "Open in GSC" then hit <strong>Request Indexing</strong> to submit it to Google.</div>
+  </div>
+
 </div>
 </section>
 
@@ -620,6 +669,14 @@ tr:hover td{color:#f1f5f9}
       <tbody id="eventsTable"><tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
     </table>
   </div>
+</div>
+
+<div class="card mt13 loading" id="cardLandingPages">
+  <div class="ct">Top Landing Pages — First Page Visitors Arrive On <span class="stag ga">GA4</span></div>
+  <table>
+    <thead><tr><th>Landing Page</th><th>Sessions</th><th>Users</th><th>Bounce</th><th>Conv</th></tr></thead>
+    <tbody id="landingPagesTable"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
+  </table>
 </div>
 </section>
 
@@ -881,6 +938,25 @@ function initCharts() {
     },
   });
 
+  // Position trend (line, reversed Y axis — lower pos = better)
+  charts.posTrend = new Chart(document.getElementById('chartPosTrend'), {
+    type: 'line',
+    data: {
+      labels: [],
+      datasets: [
+        { label: 'Avg Position', data: [], borderColor: '#fbbf24', backgroundColor: '#fbbf2415', tension: 0.3, fill: true, pointRadius: 1 },
+      ],
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { color: '#2d3148' }, ticks: { color: '#64748b', font: { size: 9 }, maxTicksLimit: 10 } },
+        y: { grid: { color: '#2d3148' }, ticks: { color: '#64748b', font: { size: 9 } }, reverse: true, min: 1 },
+      },
+    },
+  });
+
   // Donut new vs returning
   charts.donut = new Chart(document.getElementById('donutNewReturn'), {
     type: 'doughnut',
@@ -966,6 +1042,11 @@ async function loadGSCOverview(site, days = state.days) {
     charts.search.data.datasets[0].data = dates.map(d => d.impressions);
     charts.search.data.datasets[1].data = dates.map(d => d.clicks);
     charts.search.update();
+
+    // Position trend chart
+    charts.posTrend.data.labels = dates.map(d => d.date.slice(5));
+    charts.posTrend.data.datasets[0].data = dates.map(d => d.position);
+    charts.posTrend.update();
 
     computeInsights();
   } catch (e) {
@@ -1270,6 +1351,103 @@ async function loadPageSpeed() {
   }
 }
 
+// GSC Sitemaps
+async function loadSitemaps(site) {
+  try {
+    const data = await apiFetch(`/api/gsc/sitemaps?siteUrl=${encodeURIComponent(site)}`);
+    if (!data.sitemaps.length) {
+      document.getElementById('sitemapsList').innerHTML = '<div style="color:var(--muted);font-size:12px;padding:10px 0">No sitemaps found. <a href="https://search.google.com/search-console/sitemaps" target="_blank" style="color:var(--accent)">Submit one in GSC →</a></div>';
+      return;
+    }
+    const totalSubmitted = data.sitemaps.reduce((s, sm) => s + sm.submitted, 0);
+    const totalIndexed = data.sitemaps.reduce((s, sm) => s + sm.indexed, 0);
+    const pct = totalSubmitted ? Math.round((totalIndexed / totalSubmitted) * 100) : 0;
+    const pctColor = pct >= 90 ? 'var(--green)' : pct >= 70 ? 'var(--yellow)' : 'var(--red)';
+    document.getElementById('sitemapsList').innerHTML = `
+      <div class="idxstats">
+        <div class="idxs"><div class="n" style="color:var(--green)">${totalIndexed}</div><div class="l">Indexed</div></div>
+        <div class="idxs"><div class="n">${totalSubmitted}</div><div class="l">Submitted</div></div>
+        <div class="idxs"><div class="n" style="color:${pctColor}">${pct}%</div><div class="l">Coverage</div></div>
+      </div>
+      ${data.sitemaps.map(sm => {
+        const smPct = sm.submitted ? Math.round((sm.indexed / sm.submitted) * 100) : 0;
+        const smColor = smPct >= 90 ? 'var(--green)' : smPct >= 70 ? 'var(--yellow)' : 'var(--red)';
+        const path = sm.path.replace(/^https?:\/\/[^/]+/, '') || sm.path;
+        return `<div class="sitemap-row">
+          <div>
+            <div class="sitemap-path" title="${sm.path}">${path}</div>
+            ${sm.errors ? `<div style="font-size:10px;color:var(--red);margin-top:2px">${sm.errors} error${sm.errors > 1 ? 's' : ''}</div>` : ''}
+          </div>
+          <div class="sitemap-counts">
+            <div class="sc-item"><div class="n">${sm.indexed}</div><div class="l">Indexed</div></div>
+            <div class="sc-item"><div class="n">${sm.submitted}</div><div class="l">Submitted</div></div>
+            <div class="sc-item"><div class="n" style="color:${smColor}">${smPct}%</div><div class="l">Rate</div></div>
+          </div>
+        </div>`;
+      }).join('')}`;
+  } catch (e) {
+    document.getElementById('sitemapsList').innerHTML = `<div style="color:var(--red);font-size:12px">${e.message}</div>`;
+  }
+}
+
+// GSC URL Inspector
+async function checkUrl() {
+  const url = document.getElementById('inspectInput').value.trim();
+  if (!url) return;
+  const btn = document.getElementById('inspectBtn');
+  btn.disabled = true;
+  btn.textContent = 'Checking…';
+  document.getElementById('inspectResult').innerHTML = '<div style="color:var(--muted);font-size:12px;padding:12px 0">Inspecting with Google… (may take a few seconds)</div>';
+
+  try {
+    const data = await apiFetch(`/api/gsc/inspect?siteUrl=${encodeURIComponent(state.siteUrl)}&inspectionUrl=${encodeURIComponent(url)}`);
+    const isIndexed = data.verdict === 'PASS';
+    const isPartial = data.verdict === 'NEUTRAL';
+    const gscUrl = `https://search.google.com/search-console/inspect?resource_id=${encodeURIComponent(state.siteUrl)}&id=${encodeURIComponent(url)}`;
+    const verdictClass = isIndexed ? 'verdict-ok' : isPartial ? 'verdict-un' : 'verdict-no';
+    const verdictText = isIndexed ? '✓ Indexed' : isPartial ? '⚠ Partial / Unknown' : '✗ Not Indexed';
+
+    document.getElementById('inspectResult').innerHTML = `
+      <div style="background:#252840;border-radius:8px;padding:12px 14px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <span class="${verdictClass}" style="font-size:14px">${verdictText}</span>
+          <a href="${gscUrl}" target="_blank" class="gsc-link-btn">Open in GSC ↗</a>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:11px">
+          <div><span style="color:var(--muted)">Coverage: </span><span style="color:var(--dim)">${data.coverageState || '—'}</span></div>
+          <div><span style="color:var(--muted)">Indexing: </span><span style="color:var(--dim)">${data.indexingState || '—'}</span></div>
+          <div><span style="color:var(--muted)">Robots.txt: </span><span style="color:var(--dim)">${data.robotsTxtState || '—'}</span></div>
+          <div><span style="color:var(--muted)">Last crawled: </span><span style="color:var(--dim)">${data.lastCrawlTime ? new Date(data.lastCrawlTime).toLocaleDateString() : 'Never'}</span></div>
+        </div>
+        ${!isIndexed ? `<div style="margin-top:10px;padding:9px 12px;background:#7f1d1d22;border-radius:6px;font-size:11px;color:var(--red)">Page not indexed. Click <strong>"Open in GSC"</strong> above → then click <strong>"Request Indexing"</strong> to submit it to Google.</div>` : ''}
+      </div>`;
+  } catch (e) {
+    document.getElementById('inspectResult').innerHTML = `<div style="color:var(--red);font-size:12px">${e.message}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Check';
+  }
+}
+
+// GA4 Landing Pages
+async function loadLandingPages(pid, days = state.days) {
+  try {
+    const data = await apiFetch(`/api/ga4/landing-pages?propertyId=${pid}&days=${days}`);
+    document.getElementById('landingPagesTable').innerHTML = data.pages.slice(0, 12).map(p => `
+      <tr>
+        <td><span class="pt">${p.path}</span></td>
+        <td>${fmt.num(p.sessions)}</td>
+        <td>${fmt.num(p.users)}</td>
+        <td>${p.bounceRate}%</td>
+        <td>${fmt.num(p.conversions)}</td>
+      </tr>`).join('') || '<tr><td colspan="5" style="color:var(--muted)">No data</td></tr>';
+    rmLoading('cardLandingPages');
+  } catch (e) {
+    console.error('Landing pages:', e.message);
+    rmLoading('cardLandingPages');
+  }
+}
+
 // ═══════════════════════════════════════════════
 // SMART INSIGHTS
 // ═══════════════════════════════════════════════
@@ -1373,9 +1551,11 @@ async function startDashboard() {
     loadPages(p, d),
     loadEvents(p, d),
     loadReferrers(p, d),
+    loadLandingPages(p, d),
     loadGSCOverview(s, d),
     loadQueries(s, d),
     loadGSCPages(s, d),
+    loadSitemaps(s),
   ]);
 
   // Non-critical / separate
@@ -1443,6 +1623,7 @@ async function reloadAll() {
     loadPages(p, d),
     loadEvents(p, d),
     loadReferrers(p, d),
+    loadLandingPages(p, d),
     loadGSCOverview(s, d),
     loadQueries(s, d),
     loadGSCPages(s, d),

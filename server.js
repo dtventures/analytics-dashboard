@@ -19,6 +19,7 @@ function createOAuthClient() {
 
 const SCOPES = [
   'https://www.googleapis.com/auth/analytics.readonly',
+  'https://www.googleapis.com/auth/webmasters',
   'https://www.googleapis.com/auth/webmasters.readonly',
   'https://www.googleapis.com/auth/userinfo.email',
   'https://www.googleapis.com/auth/userinfo.profile',
@@ -798,6 +799,102 @@ app.get('/api/gsc/pages', requireAuth, async (req, res) => {
     res.json({ pages });
   } catch (err) {
     console.error('GSC pages error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── GSC: Sitemaps ───────────────────────────────────────────────────────────
+
+app.get('/api/gsc/sitemaps', requireAuth, async (req, res) => {
+  const { siteUrl } = req.query;
+  if (!siteUrl) return res.status(400).json({ error: 'siteUrl required' });
+
+  const auth = getAuthClient(req);
+  const sc = google.webmasters({ version: 'v3', auth });
+
+  try {
+    const { data } = await sc.sitemaps.list({ siteUrl });
+    const sitemaps = (data.sitemap || []).map(s => ({
+      path: s.path,
+      lastSubmitted: s.lastSubmitted,
+      lastDownloaded: s.lastDownloaded,
+      warnings: s.warnings || 0,
+      errors: s.errors || 0,
+      submitted: (s.contents || []).reduce((sum, c) => sum + (parseInt(c.submitted, 10) || 0), 0),
+      indexed: (s.contents || []).reduce((sum, c) => sum + (parseInt(c.indexed, 10) || 0), 0),
+    }));
+    res.json({ sitemaps });
+  } catch (err) {
+    console.error('Sitemaps error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── GSC: URL Inspection ─────────────────────────────────────────────────────
+
+app.get('/api/gsc/inspect', requireAuth, async (req, res) => {
+  const { siteUrl, inspectionUrl } = req.query;
+  if (!siteUrl || !inspectionUrl) return res.status(400).json({ error: 'siteUrl and inspectionUrl required' });
+
+  const auth = getAuthClient(req);
+  const sc = google.searchconsole({ version: 'v1', auth });
+
+  try {
+    const { data } = await sc.urlInspection.index.inspect({
+      requestBody: { inspectionUrl, siteUrl },
+    });
+    const r = data.inspectionResult?.indexStatusResult || {};
+    res.json({
+      verdict: r.verdict,
+      coverageState: r.coverageState,
+      robotsTxtState: r.robotsTxtState,
+      indexingState: r.indexingState,
+      lastCrawlTime: r.lastCrawlTime,
+      pageFetchState: r.pageFetchState,
+      googleCanonical: r.googleCanonical,
+      sitemap: r.sitemap || [],
+    });
+  } catch (err) {
+    console.error('Inspect error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// ─── GA4: Landing Pages ──────────────────────────────────────────────────────
+
+app.get('/api/ga4/landing-pages', requireAuth, async (req, res) => {
+  const { propertyId, days = 30 } = req.query;
+  if (!propertyId) return res.status(400).json({ error: 'propertyId required' });
+
+  const auth = getAuthClient(req);
+  const ga4 = ga4Client(auth);
+
+  try {
+    const { data } = await ga4.properties.runReport({
+      property: `properties/${propertyId}`,
+      requestBody: {
+        dateRanges: [dateRange(parseInt(days, 10))],
+        dimensions: [{ name: 'landingPage' }],
+        metrics: [
+          { name: 'sessions' },
+          { name: 'totalUsers' },
+          { name: 'bounceRate' },
+          { name: 'conversions' },
+        ],
+        orderBys: [{ metric: { metricName: 'sessions' }, desc: true }],
+        limit: 15,
+      },
+    });
+    const pages = (data.rows || []).map(r => ({
+      path: r.dimensionValues[0].value,
+      sessions: parseInt(r.metricValues[0].value, 10),
+      users: parseInt(r.metricValues[1].value, 10),
+      bounceRate: Math.round(parseFloat(r.metricValues[2].value) * 100),
+      conversions: parseInt(r.metricValues[3].value, 10),
+    }));
+    res.json({ pages });
+  } catch (err) {
+    console.error('Landing pages error:', err.message);
     res.status(500).json({ error: err.message });
   }
 });
