@@ -153,6 +153,32 @@ h1 span{background:linear-gradient(135deg,#6366f1,#a5b4fc);-webkit-background-cl
 .feat-tags{display:flex;gap:5px;margin-top:12px;flex-wrap:wrap}
 .feat-tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;background:#252840;color:var(--dim)}
 
+/* ── CLI SECTION ── */
+.cli-section{padding:80px 48px;max-width:1100px;margin:0 auto}
+.cli-layout{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;margin-top:48px}
+.cli-terminal{border-radius:12px;overflow:hidden;border:1px solid var(--border);box-shadow:0 24px 80px #00000066;font-family:'SF Mono','Fira Code',monospace}
+.cli-term-bar{background:#13151f;padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.cli-term-title{font-size:11px;color:var(--muted);flex:1;text-align:center}
+.cli-term-body{background:#0d0f1a;padding:18px 20px;font-size:11.5px;line-height:1.7;overflow:hidden}
+.cli-term-body .p{color:#6366f1}
+.cli-term-body .g{color:#4ade80}
+.cli-term-body .c{color:#22d3ee}
+.cli-term-body .y{color:#fbbf24}
+.cli-term-body .r{color:#f87171}
+.cli-term-body .d{color:#475569}
+.cli-term-body .w{color:#e2e8f0}
+.cli-term-body .b{font-weight:700}
+.cli-steps-wrap{display:flex;flex-direction:column;gap:28px}
+.cli-install{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px}
+.cli-install code{font-family:'SF Mono','Fira Code',monospace;font-size:14px;color:var(--accent)}
+.cli-copy-btn{background:#252840;border:1px solid var(--border);border-radius:6px;padding:5px 12px;font-size:11px;color:var(--dim);cursor:pointer;white-space:nowrap;transition:all .15s}
+.cli-copy-btn:hover{border-color:var(--accent);color:var(--text)}
+.cli-feat{display:flex;gap:12px;align-items:flex-start}
+.cli-feat-icon{font-size:18px;flex-shrink:0;margin-top:2px}
+.cli-feat-title{font-size:14px;font-weight:700;color:#f8fafc;margin-bottom:3px}
+.cli-feat-desc{font-size:13px;color:var(--muted);line-height:1.5}
+@media(max-width:768px){.cli-layout{grid-template-columns:1fr}}
+
 /* ── HOW IT WORKS ── */
 .how{padding:80px 48px;max-width:900px;margin:0 auto}
 .steps{display:flex;flex-direction:column;gap:0}
@@ -426,6 +452,100 @@ footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-i
       <div class="feat-title">Private by Design</div>
       <div class="feat-desc">Runs on your own server. OAuth tokens stored in your session. Read-only API access. Your analytics data never touches a third party.</div>
       <div class="feat-tags"><span class="feat-tag">Self-hosted</span><span class="feat-tag">Read-only</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CLI SECTION ── -->
+<section class="cli-section">
+  <div class="section-label">CLI</div>
+  <h2 class="section-title">Your analytics in the terminal</h2>
+  <p class="section-sub">Check your stats without opening a browser. Works anywhere Node.js runs — including Claude Code.</p>
+
+  <div class="cli-layout">
+    <!-- Terminal mockup -->
+    <div class="cli-terminal">
+      <div class="cli-term-bar">
+        <div class="b-dots"><div class="b-dot r"></div><div class="b-dot y"></div><div class="b-dot g"></div></div>
+        <span class="cli-term-title">analytics-dash</span>
+      </div>
+      <div class="cli-term-body">
+        <div><span class="d">$</span> <span class="g">analytics-dash</span> <span class="d">--days 7</span></div>
+        <br>
+        <div><span class="c b">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span></div>
+        <div><span class="c b">  Analytics Dashboard</span><span class="d">  ·  last 7 days  ·  3/19/2026</span></div>
+        <div><span class="c b">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</span></div>
+        <br>
+        <div><span class="c b">⚡ Realtime</span></div>
+        <div><span class="d">──────────────────────────────────────────────────────────────</span></div>
+        <div>  <span class="c b">14</span> active users right now</div>
+        <div>  <span class="d">·</span> Organic Search              <span class="d">7 users</span></div>
+        <div>  <span class="d">·</span> Direct                      <span class="d">4 users</span></div>
+        <br>
+        <div><span class="c b">📊 Overview</span></div>
+        <div><span class="d">──────────────────────────────────────────────────────────────</span></div>
+        <div>  Users                  <span class="w b">     2,847</span>   <span class="g">  +14.3%</span></div>
+        <div>  Sessions               <span class="w b">     4,120</span>   <span class="g">  +12.6%</span></div>
+        <div>  Conversions            <span class="w b">        68</span>   <span class="g">  +12.2%</span></div>
+        <div>  Engagement Rate        <span class="w b">     61.0%</span>   <span class="g">   +7.0%</span></div>
+        <div>  Bounce Rate            <span class="w b">     38.0%</span>   <span class="g">   -9.5%</span></div>
+        <br>
+        <div><span class="c b">📈 Session Trend</span></div>
+        <div><span class="d">──────────────────────────────────────────────────────────────</span></div>
+        <div>  <span class="c">▃▄▅▃▆▇█▅▄▆▇█▅▄▆▃▄▅▃▆▇█▅▄▆▇</span></div>
+        <div>  <span class="d">min 487  ·  avg 589  ·  max 742</span></div>
+        <br>
+        <div><span class="c b">🔍 Search Console</span></div>
+        <div><span class="d">──────────────────────────────────────────────────────────────</span></div>
+        <div>  Clicks                 <span class="w b">     1,124</span></div>
+        <div>  Impressions            <span class="w b">    29,840</span></div>
+        <div>  CTR                    <span class="w b">      3.8%</span></div>
+        <div>  Avg Position           <span class="w b">      14.2</span></div>
+      </div>
+    </div>
+
+    <!-- Steps + features -->
+    <div class="cli-steps-wrap">
+      <div>
+        <div style="font-size:13px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:10px">Install</div>
+        <div class="cli-install">
+          <code>npm install -g analytics-dash</code>
+          <button class="cli-copy-btn" onclick="navigator.clipboard.writeText('npm install -g analytics-dash');this.textContent='Copied!';setTimeout(()=>this.textContent='Copy',1500)">Copy</button>
+        </div>
+        <div style="font-size:12px;color:var(--muted)">Then run <code style="font-family:monospace;color:var(--accent)">analytics-dash</code> — a setup wizard walks you through the rest.</div>
+      </div>
+
+      <div class="cli-feat">
+        <div class="cli-feat-icon">🔐</div>
+        <div>
+          <div class="cli-feat-title">One-time Google OAuth setup</div>
+          <div class="cli-feat-desc">On first run a browser window opens for authentication. Tokens are stored locally — you never re-authenticate.</div>
+        </div>
+      </div>
+
+      <div class="cli-feat">
+        <div class="cli-feat-icon">⚡</div>
+        <div>
+          <div class="cli-feat-title">Instant from the terminal</div>
+          <div class="cli-feat-desc">Realtime users, traffic overview, top pages, channel breakdown, Search Console data — all fetched in parallel and printed in seconds.</div>
+        </div>
+      </div>
+
+      <div class="cli-feat">
+        <div class="cli-feat-icon">🤖</div>
+        <div>
+          <div class="cli-feat-title">Made for Claude Code</div>
+          <div class="cli-feat-desc">Run it inside Claude Code and ask questions about your data — "which pages are performing best?" or "compare my GSC queries to top GA4 pages".</div>
+        </div>
+      </div>
+
+      <div class="cli-feat">
+        <div class="cli-feat-icon">📅</div>
+        <div>
+          <div class="cli-feat-title">Flexible date ranges</div>
+          <div class="cli-feat-desc"><code style="font-family:monospace;font-size:12px;color:var(--accent)">analytics-dash --days 7</code> or <code style="font-family:monospace;font-size:12px;color:var(--accent)">--days 90</code>. Defaults to 30 days.</div>
+        </div>
+      </div>
     </div>
   </div>
 </section>
