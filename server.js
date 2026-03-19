@@ -120,7 +120,7 @@ app.get('/auth/callback', async (req, res) => {
       picture: user.picture,
     };
 
-    res.redirect('/app');
+    res.redirect('/app?signed_in=1');
   } catch (err) {
     console.error('OAuth callback error:', err.message);
     res.redirect('/?error=auth_failed');

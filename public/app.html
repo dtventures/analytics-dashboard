@@ -6,6 +6,14 @@
 <title>AnalyticsDash</title>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <link rel="icon" type="image/png" href="/favicon.png">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-C5SDYM0PP8"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-C5SDYM0PP8');
+</script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -446,7 +454,6 @@ tr:hover td{color:#f1f5f9}
   <div class="nav-group">Search</div>
   <a href="#search" class="nav-link"><span class="nav-icon">🔎</span>Search Performance</a>
   <a href="#keywords" class="nav-link"><span class="nav-icon">🏆</span>Quick Wins</a>
-  <a href="#indexcoverage" class="nav-link"><span class="nav-icon">🗂️</span>Index Coverage</a>
 
   <div class="nav-group">Users</div>
   <a href="#audience" class="nav-link"><span class="nav-icon">👥</span>Audience</a>
@@ -582,29 +589,6 @@ tr:hover td{color:#f1f5f9}
     <tbody id="lowCTRTable"><tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px 0">Loading…</td></tr></tbody>
   </table>
   <div style="margin-top:10px;font-size:11px;color:var(--muted)" id="lowCTRNote"></div>
-</div>
-</section>
-
-<!-- ═══ INDEX COVERAGE ═══ -->
-<section id="indexcoverage">
-<div class="sl">Index Coverage — Is Google Finding Your Pages?</div>
-<div class="g2">
-
-  <div class="card" id="cardSitemaps">
-    <div class="ct">Sitemaps <span class="stag gsc">GSC</span></div>
-    <div id="sitemapsList"><div style="color:var(--muted);font-size:12px;padding:20px 0;text-align:center">Loading…</div></div>
-  </div>
-
-  <div class="card" id="cardInspect">
-    <div class="ct">Check & Submit URLs <span class="stag gsc">GSC</span></div>
-    <div class="idx-form">
-      <input class="idx-input" id="inspectInput" type="url" placeholder="https://lighthouselaunch.com/blog/…">
-      <button class="idx-check-btn" id="inspectBtn" onclick="checkUrl()">Check</button>
-    </div>
-    <div id="inspectResult" style="min-height:60px"></div>
-    <div style="margin-top:12px;font-size:11px;color:var(--muted);line-height:1.6">💡 If a page shows as <strong style="color:var(--red)">Not Indexed</strong>, click "Open in GSC" then hit <strong>Request Indexing</strong> to submit it to Google.</div>
-  </div>
-
 </div>
 </section>
 
@@ -791,7 +775,11 @@ async function init() {
   const params = new URLSearchParams(location.search);
   if (params.get('error')) {
     alert('Auth error: ' + params.get('error') + '\n\nCheck your Google Cloud setup.');
-    history.replaceState({}, '', '/');
+    history.replaceState({}, '', '/app');
+  }
+  if (params.get('signed_in')) {
+    gtag('event', 'login', { method: 'Google' });
+    history.replaceState({}, '', '/app');
   }
 
   try {
