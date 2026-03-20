@@ -82,6 +82,33 @@ function getAuthClient(req) {
 
 // ─── Auth routes ─────────────────────────────────────────────────────────────
 
+app.post('/cli-refresh', async (req, res) => {
+  const { refresh_token } = req.body;
+  if (!refresh_token) return res.status(400).json({ error: 'refresh_token required' });
+  try {
+    const client = createOAuthClient();
+    client.setCredentials({ refresh_token });
+    const { credentials } = await client.refreshAccessToken();
+    res.json({ access_token: credentials.access_token, expiry_date: credentials.expiry_date });
+  } catch (err) {
+    res.status(401).json({ error: err.message });
+  }
+});
+
+app.get('/cli-auth', (req, res) => {
+  if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
+    return res.status(500).send('Server not configured.');
+  }
+  const client = createOAuthClient();
+  const url = client.generateAuthUrl({
+    access_type: 'offline',
+    prompt: 'consent',
+    scope: SCOPES,
+    state: 'cli',
+  });
+  res.redirect(url);
+});
+
 app.get('/auth/login', (req, res) => {
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
     return res.status(500).send(`
@@ -100,7 +127,7 @@ app.get('/auth/login', (req, res) => {
 });
 
 app.get('/auth/callback', async (req, res) => {
-  const { code, error } = req.query;
+  const { code, error, state } = req.query;
   if (error) return res.redirect('/?error=' + encodeURIComponent(error));
 
   try {
@@ -108,7 +135,13 @@ app.get('/auth/callback', async (req, res) => {
     const { tokens } = await client.getToken(code);
     client.setCredentials(tokens);
 
-    // Get user info
+    // CLI flow — pass tokens back to localhost
+    if (state === 'cli') {
+      const encoded = encodeURIComponent(JSON.stringify(tokens));
+      return res.redirect(`http://localhost:3001/callback?tokens=${encoded}`);
+    }
+
+    // Web flow
     const oauth2 = google.oauth2({ version: 'v2', auth: client });
     const { data: user } = await oauth2.userinfo.get();
 

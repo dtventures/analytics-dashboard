@@ -92,33 +92,45 @@ const SCOPES = [
   'https://www.googleapis.com/auth/userinfo.email',
 ];
 
-function createOAuthClient(clientId, clientSecret) {
-  return new google.auth.OAuth2(clientId, clientSecret, CLI_REDIRECT);
-}
+const HOSTED_AUTH_URL = 'https://analyticsdash.lighthouselaunch.com/cli-auth';
 
-async function setupCredentials() {
-  console.log('\n' + bold('🔧 First-time setup — Google OAuth credentials'));
-  console.log(dim('\n  You need a Google OAuth Client ID and Secret.'));
-  console.log(dim('  Follow these steps:\n'));
-  console.log(`  ${bold('1.')} Go to ${cyan('console.cloud.google.com')}`);
-  console.log(`  ${bold('2.')} APIs & Services → Credentials → Create Credentials → OAuth client ID`);
-  console.log(`  ${bold('3.')} Application type: ${bold('Web application')}`);
-  console.log(`  ${bold('4.')} Add this Authorized Redirect URI:`);
-  console.log(`     ${cyan(`http://localhost:${CLI_PORT}/callback`)}`);
-  console.log(`  ${bold('5.')} Copy the Client ID and Client Secret below\n`);
+async function runOAuthFlow() {
+  console.log('\n' + bold('🔐 Sign in with Google to get started'));
+  console.log(dim('\n  Opening browser...'));
+  openBrowser(HOSTED_AUTH_URL);
 
-  const clientId     = await ask('  Paste your Client ID:     ');
-  const clientSecret = await ask('  Paste your Client Secret: ');
+  return new Promise((resolve, reject) => {
+    const server = http.createServer(async (req, res) => {
+      const u = new URL(req.url, `http://localhost:${CLI_PORT}`);
+      const encoded = u.searchParams.get('tokens');
+      const error = u.searchParams.get('error');
 
-  if (!clientId || !clientSecret) {
-    console.error(red('\nError: both fields are required.'));
-    process.exit(1);
-  }
+      if (error) {
+        res.end(`<h2>Auth failed: ${error}</h2><p>Close this tab and check your terminal.</p>`);
+        server.close();
+        return reject(new Error('OAuth error: ' + error));
+      }
 
-  const existing = loadConfig() || {};
-  saveConfig({ ...existing, clientId, clientSecret });
-  console.log(green('\n✓ Credentials saved to ~/.analytics-cli-config.json\n'));
-  return { clientId, clientSecret };
+      if (!encoded) { res.end('Waiting...'); return; }
+
+      res.end('<h2 style="font-family:sans-serif">✅ Authenticated! You can close this tab.</h2>');
+      server.close();
+
+      try {
+        const tokens = JSON.parse(decodeURIComponent(encoded));
+        saveTokens(tokens);
+        console.log(green('\n✓ Signed in — tokens saved.\n'));
+        resolve(tokens);
+      } catch (err) {
+        reject(err);
+      }
+    });
+
+    server.listen(CLI_PORT, () =>
+      console.log(dim(`  Waiting for login on port ${CLI_PORT}...`))
+    );
+    server.on('error', reject);
+  });
 }
 
 function loadTokens() {
@@ -188,17 +200,37 @@ async function runOAuthFlow(clientId, clientSecret) {
   });
 }
 
-async function getAuthClient(clientId, clientSecret) {
-  let tokens = loadTokens();
-  if (!tokens) tokens = await runOAuthFlow(clientId, clientSecret);
+const HOSTED_REFRESH_URL = 'https://analyticsdash.lighthouselaunch.com/cli-refresh';
 
-  const client = createOAuthClient(clientId, clientSecret);
-  client.setCredentials(tokens);
-  client.on('tokens', newTokens => {
-    tokens = { ...tokens, ...newTokens };
-    saveTokens(tokens);
+async function refreshTokens(tokens) {
+  const res = await fetch(HOSTED_REFRESH_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refresh_token: tokens.refresh_token }),
   });
+  if (!res.ok) throw new Error('Token refresh failed — run analytics-dash --reauth');
+  const data = await res.json();
+  return { ...tokens, access_token: data.access_token, expiry_date: data.expiry_date };
+}
 
+async function getAuthClient() {
+  let tokens = loadTokens();
+  if (!tokens) tokens = await runOAuthFlow();
+
+  // Refresh if expired (with 60s buffer)
+  if (tokens.expiry_date && Date.now() > tokens.expiry_date - 60000) {
+    try {
+      tokens = await refreshTokens(tokens);
+      saveTokens(tokens);
+    } catch (e) {
+      console.error(yellow('\n⚠ Token refresh failed — re-authenticating...\n'));
+      tokens = await runOAuthFlow();
+    }
+  }
+
+  const { google: g } = require('googleapis');
+  const client = new g.auth.OAuth2();
+  client.setCredentials(tokens);
   return client;
 }
 
@@ -555,18 +587,14 @@ function renderGscPages(result) {
 // ── Main ──────────────────────────────────────────────────────────────────────
 
 async function main() {
-  let config = loadConfig() || {};
-
-  // First-time credential setup
-  if (!config.clientId || !config.clientSecret || args.includes('--reconfigure')) {
-    const creds = await setupCredentials();
-    config = { ...config, ...creds };
+  if (args.includes('--reauth')) {
+    fs.rmSync(TOKEN_FILE, { force: true });
+    console.log(dim('Cleared saved tokens — re-authenticating...\n'));
   }
 
-  const { clientId, clientSecret } = config;
-  const auth = await getAuthClient(clientId, clientSecret);
+  const auth = await getAuthClient();
 
-  // Property/site selection (first run or --reconfigure)
+  let config = loadConfig() || {};
   if (!config.propertyId || !config.siteUrl || args.includes('--reconfigure')) {
     config = await selectConfig(auth);
   }
