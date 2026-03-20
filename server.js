@@ -99,12 +99,13 @@ app.get('/cli-auth', (req, res) => {
   if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET) {
     return res.status(500).send('Server not configured.');
   }
+  const port = parseInt(req.query.port, 10) || 3001;
   const client = createOAuthClient();
   const url = client.generateAuthUrl({
     access_type: 'offline',
     prompt: 'consent',
     scope: SCOPES,
-    state: 'cli',
+    state: `cli:${port}`,
   });
   res.redirect(url);
 });
@@ -135,10 +136,11 @@ app.get('/auth/callback', async (req, res) => {
     const { tokens } = await client.getToken(code);
     client.setCredentials(tokens);
 
-    // CLI flow — pass tokens back to localhost
-    if (state === 'cli') {
+    // CLI flow — pass tokens back to localhost on the port the CLI is listening on
+    if (state?.startsWith('cli')) {
+      const port = parseInt(state.split(':')[1], 10) || 3001;
       const encoded = encodeURIComponent(JSON.stringify(tokens));
-      return res.redirect(`http://localhost:3001/callback?tokens=${encoded}`);
+      return res.redirect(`http://localhost:${port}/callback?tokens=${encoded}`);
     }
 
     // Web flow

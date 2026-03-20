@@ -10,8 +10,8 @@ const { execSync } = require('child_process');
 
 const TOKEN_FILE = path.join(os.homedir(), '.analytics-cli.json');
 const CONFIG_FILE = path.join(os.homedir(), '.analytics-cli-config.json');
-const CLI_PORT = 3001;
-const CLI_REDIRECT = `http://localhost:${CLI_PORT}/callback`;
+const HOSTED_AUTH_URL    = 'https://analyticsdash.lighthouselaunch.com/cli-auth';
+const HOSTED_REFRESH_URL = 'https://analyticsdash.lighthouselaunch.com/cli-refresh';
 
 // ── CLI args ──────────────────────────────────────────────────────────────────
 
@@ -86,53 +86,6 @@ function header(days) {
 
 // ── OAuth ─────────────────────────────────────────────────────────────────────
 
-const SCOPES = [
-  'https://www.googleapis.com/auth/analytics.readonly',
-  'https://www.googleapis.com/auth/webmasters.readonly',
-  'https://www.googleapis.com/auth/userinfo.email',
-];
-
-const HOSTED_AUTH_URL = 'https://analyticsdash.lighthouselaunch.com/cli-auth';
-
-async function runOAuthFlow() {
-  console.log('\n' + bold('🔐 Sign in with Google to get started'));
-  console.log(dim('\n  Opening browser...'));
-  openBrowser(HOSTED_AUTH_URL);
-
-  return new Promise((resolve, reject) => {
-    const server = http.createServer(async (req, res) => {
-      const u = new URL(req.url, `http://localhost:${CLI_PORT}`);
-      const encoded = u.searchParams.get('tokens');
-      const error = u.searchParams.get('error');
-
-      if (error) {
-        res.end(`<h2>Auth failed: ${error}</h2><p>Close this tab and check your terminal.</p>`);
-        server.close();
-        return reject(new Error('OAuth error: ' + error));
-      }
-
-      if (!encoded) { res.end('Waiting...'); return; }
-
-      res.end('<h2 style="font-family:sans-serif">✅ Authenticated! You can close this tab.</h2>');
-      server.close();
-
-      try {
-        const tokens = JSON.parse(decodeURIComponent(encoded));
-        saveTokens(tokens);
-        console.log(green('\n✓ Signed in — tokens saved.\n'));
-        resolve(tokens);
-      } catch (err) {
-        reject(err);
-      }
-    });
-
-    server.listen(CLI_PORT, () =>
-      console.log(dim(`  Waiting for login on port ${CLI_PORT}...`))
-    );
-    server.on('error', reject);
-  });
-}
-
 function loadTokens() {
   try { return JSON.parse(fs.readFileSync(TOKEN_FILE, 'utf8')); }
   catch { return null; }
@@ -152,55 +105,71 @@ function saveConfig(config) {
 }
 
 function openBrowser(url) {
-  try { execSync(`open "${url}"`, { stdio: 'ignore' }); }
-  catch { console.log(`\nOpen this URL in your browser:\n${url}\n`); }
+  const cmd = process.platform === 'win32' ? `start "" "${url}"`
+            : process.platform === 'darwin' ? `open "${url}"`
+            : `xdg-open "${url}"`;
+  try { execSync(cmd, { stdio: 'ignore' }); return true; }
+  catch { return false; }
 }
 
-async function runOAuthFlow(clientId, clientSecret) {
-  const client = createOAuthClient(clientId, clientSecret);
-  const url = client.generateAuthUrl({ access_type: 'offline', prompt: 'consent', scope: SCOPES });
+function findFreePort(start = 3001, end = 3020) {
+  return new Promise((resolve, reject) => {
+    const tryPort = (port) => {
+      if (port > end) return reject(new Error(`No free port found between ${start}–${end}`));
+      const s = http.createServer();
+      s.listen(port, () => s.close(() => resolve(port)));
+      s.on('error', () => tryPort(port + 1));
+    };
+    tryPort(start);
+  });
+}
 
-  console.log('\n' + bold('🔐 First-time setup — Google authentication required'));
-  console.log(dim(`\n  Make sure this redirect URI is added in Google Cloud Console:`));
-  console.log(cyan(`  http://localhost:${CLI_PORT}/callback`));
-  console.log(dim('\n  Opening browser...'));
-  openBrowser(url);
+async function runOAuthFlow() {
+  const port = await findFreePort();
+  const authUrl = `${HOSTED_AUTH_URL}?port=${port}`;
+
+  console.log('\n' + bold('🔐 Sign in with Google to get started'));
+
+  const opened = openBrowser(authUrl);
+  if (opened) {
+    console.log(dim(`\n  Browser opened — complete sign-in to continue...`));
+  } else {
+    console.log(dim('\n  Could not open browser automatically.'));
+    console.log('  Open this URL on any device:\n');
+    console.log(cyan(`  ${authUrl}\n`));
+  }
 
   return new Promise((resolve, reject) => {
     const server = http.createServer(async (req, res) => {
-      const u = new URL(req.url, `http://localhost:${CLI_PORT}`);
-      const code = u.searchParams.get('code');
+      const u = new URL(req.url, `http://localhost:${port}`);
+      const encoded = u.searchParams.get('tokens');
       const error = u.searchParams.get('error');
 
       if (error) {
-        res.end(`<h2>Auth failed: ${error}</h2><p>Close this tab and check your terminal.</p>`);
+        res.end(`<h2>Auth failed: ${error}</h2><p>Close this tab.</p>`);
         server.close();
         return reject(new Error('OAuth error: ' + error));
       }
 
-      if (!code) { res.end('Waiting...'); return; }
+      if (!encoded) { res.end('Waiting...'); return; }
 
-      res.end('<h2 style="font-family:sans-serif">✅ Authenticated! You can close this tab.</h2>');
+      res.end('<h2 style="font-family:sans-serif">✅ Signed in! You can close this tab.</h2>');
       server.close();
 
       try {
-        const { tokens } = await client.getToken(code);
+        const tokens = JSON.parse(decodeURIComponent(encoded));
         saveTokens(tokens);
-        console.log(green('\n✓ Authenticated — tokens saved to ~/.analytics-cli.json\n'));
+        console.log(green('\n✓ Signed in — tokens saved.\n'));
         resolve(tokens);
       } catch (err) {
         reject(err);
       }
     });
 
-    server.listen(CLI_PORT, () =>
-      console.log(dim(`\n  Waiting for OAuth callback on port ${CLI_PORT}...`))
-    );
+    server.listen(port);
     server.on('error', reject);
   });
 }
-
-const HOSTED_REFRESH_URL = 'https://analyticsdash.lighthouselaunch.com/cli-refresh';
 
 async function refreshTokens(tokens) {
   const res = await fetch(HOSTED_REFRESH_URL, {
@@ -228,8 +197,7 @@ async function getAuthClient() {
     }
   }
 
-  const { google: g } = require('googleapis');
-  const client = new g.auth.OAuth2();
+  const client = new google.auth.OAuth2();
   client.setCredentials(tokens);
   return client;
 }
