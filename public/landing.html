@@ -272,23 +272,38 @@ h1 span{background:linear-gradient(135deg,#6366f1,#a5b4fc);-webkit-background-cl
 .cta-card p{font-size:15px;color:var(--dim);margin-bottom:32px;line-height:1.6}
 
 /* ── FOOTER ── */
-footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
-.footer-logo{display:flex;align-items:center;gap:8px;text-decoration:none}
-.footer-logo-text{font-size:13px;font-weight:700;color:var(--dim)}
+footer{border-top:1px solid var(--border);padding:56px 48px 32px;margin-top:0}
+.footer-inner{max-width:1380px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+.footer-logo{display:flex;align-items:center;gap:9px;text-decoration:none;margin-bottom:12px}
+.footer-logo svg{width:26px;height:26px;flex-shrink:0}
+.footer-logo-text{font-size:14px;font-weight:700;color:#f8fafc}
 .footer-logo-text span{color:var(--accent)}
-.footer-note{font-size:12px;color:var(--muted)}
-.footer-links{display:flex;gap:20px}
-.footer-links a{font-size:12px;color:var(--muted);text-decoration:none}
-.footer-links a:hover{color:var(--text)}
+.footer-tagline{font-size:13px;color:var(--muted);line-height:1.6;max-width:220px;margin-bottom:16px}
+.footer-lh{font-size:12px;color:var(--muted)}
+.footer-lh a{color:var(--accent);text-decoration:none}
+.footer-lh a:hover{text-decoration:underline}
+.footer-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dim);margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:9px;transition:color .15s}
+.footer-col a:hover{color:var(--text)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid var(--border);flex-wrap:wrap;gap:12px}
+.footer-copy{font-size:12px;color:var(--muted)}
+.footer-bottom-links{display:flex;gap:20px}
+.footer-bottom-links a{font-size:12px;color:var(--muted);text-decoration:none}
+.footer-bottom-links a:hover{color:var(--text)}
 
+@media(max-width:900px){.footer-top{grid-template-columns:1fr 1fr}.footer-top .footer-brand{grid-column:1/-1}}
 @media(max-width:768px){
-  nav,footer{padding:0 20px}
+  nav{padding:0 20px}
+  footer{padding:48px 20px 28px}
   .hero,.features,.how,.cta-section,.preview-wrap,.articles{padding-left:20px;padding-right:20px}
   .feat-grid{grid-template-columns:1fr}
   .art-grid{grid-template-columns:1fr}
   h1{letter-spacing:-1px}
   .stats-strip{gap:24px;padding:30px 20px}
   .mock-g4{grid-template-columns:repeat(2,1fr)}
+  .footer-top{grid-template-columns:1fr}
+  .footer-top .footer-brand{grid-column:auto}
 }
 </style>
 </head>
@@ -680,27 +695,49 @@ footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-i
 
 <!-- ── FOOTER ── -->
 <footer role="contentinfo">
-  <a class="footer-logo" href="/">
-    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px">
-      <rect width="32" height="32" rx="8" fill="#6366f1"/>
-      <rect x="5" y="20" width="5" height="8" rx="1.5" fill="white"/>
-      <rect x="13.5" y="13" width="5" height="15" rx="1.5" fill="white"/>
-      <rect x="22" y="7" width="5" height="21" rx="1.5" fill="white"/>
-    </svg>
-    <span class="footer-logo-text">Analytics<span>Dash</span></span>
-  </a>
-  <div class="footer-note">🚀 A <a href="https://lighthouselaunch.com" target="_blank" style="color:var(--accent);text-decoration:none">Lighthouse Launch</a> Tool</div>
-  <div class="footer-links">
-    <a href="/auth/login">Sign in</a>
-    <a href="/articles/connect-google-analytics-4">GA4 Guide</a>
-    <a href="/articles/connect-google-search-console">GSC Guide</a>
-    <a href="https://lighthouselaunch.com" target="_blank">Lighthouse Launch</a>
-  </div>
-  <div class="footer-links" style="margin-top:8px">
-    <span style="color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px">vs</span>
-    <a href="/vs/amplitude">vs Amplitude</a>
-    <a href="/vs/plausible">vs Plausible</a>
-    <a href="/vs/umami">vs Umami</a>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="footer-logo" href="/">
+          <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6366f1"/>
+            <rect x="5" y="20" width="5" height="8" rx="1.5" fill="white"/>
+            <rect x="13.5" y="13" width="5" height="15" rx="1.5" fill="white"/>
+            <rect x="22" y="7" width="5" height="21" rx="1.5" fill="white"/>
+          </svg>
+          <span class="footer-logo-text">Analytics<span>Dash</span></span>
+        </a>
+        <p class="footer-tagline">The best dashboard for GA4 and Search Console — plus a CLI for developers.</p>
+        <div class="footer-lh">A <a href="https://lighthouselaunch.com" target="_blank">Lighthouse Launch</a> tool</div>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <a href="/auth/login">Sign in</a>
+        <a href="#features">Features</a>
+        <a href="#cli">CLI tool</a>
+        <a href="#how">How it works</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Compare</div>
+        <a href="/vs">Compare all</a>
+        <a href="/vs/amplitude">vs Amplitude</a>
+        <a href="/vs/plausible">vs Plausible</a>
+        <a href="/vs/umami">vs Umami</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Resources</div>
+        <a href="/articles/connect-google-analytics-4">GA4 Setup Guide</a>
+        <a href="/articles/connect-google-search-console">GSC Setup Guide</a>
+        <a href="https://www.npmjs.com/package/analytics-dash" target="_blank">npm package</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 AnalyticsDash. All rights reserved.</div>
+      <div class="footer-bottom-links">
+        <a href="/auth/login">Sign in</a>
+        <a href="https://lighthouselaunch.com" target="_blank">Lighthouse Launch</a>
+      </div>
+    </div>
   </div>
 </footer>
 

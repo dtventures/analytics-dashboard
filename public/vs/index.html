@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AnalyticsDash vs Amplitude vs Plausible vs Umami — Full Comparison</title>
+<meta name="description" content="Compare AnalyticsDash, Amplitude, Plausible, and Umami side-by-side. Pricing, GA4 integration, Search Console, CLI support, self-hosting, and more.">
+<link rel="canonical" href="https://analyticsdash.lighthouselaunch.com/vs">
+<meta property="og:title" content="AnalyticsDash vs Amplitude vs Plausible vs Umami">
+<meta property="og:description" content="Full side-by-side comparison of the top web analytics tools: pricing, features, GA4 integration, SEO data, and CLI support.">
+<meta property="og:url" content="https://analyticsdash.lighthouselaunch.com/vs">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="AnalyticsDash">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f1117;--surface:#1a1d2e;--border:#2d3148;--subtle:#1e2235;
+  --text:#e2e8f0;--muted:#64748b;--dim:#94a3b8;
+  --accent:#6366f1;--green:#4ade80;--blue:#60a5fa;--yellow:#fbbf24;--red:#f87171;
+}
+html{scroll-behavior:smooth}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:0 48px;height:60px;display:flex;align-items:center;justify-content:space-between;background:rgba(15,17,23,0.9);backdrop-filter:blur(12px);border-bottom:1px solid rgba(45,49,72,0.6)}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.nav-logo svg{width:28px;height:28px}
+.nav-logo-text{font-size:15px;font-weight:700;color:#f8fafc}
+.nav-logo-text span{color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none}
+.nav-back:hover{color:var(--text)}
+.btn-nav{display:inline-flex;align-items:center;background:var(--accent);color:#fff;border-radius:7px;padding:7px 16px;font-size:13px;font-weight:600;text-decoration:none;transition:opacity .15s}
+.btn-nav:hover{opacity:.88;text-decoration:none}
+
+/* WRAP */
+.wrap{max-width:1040px;margin:0 auto;padding:100px 24px 80px}
+
+/* HERO */
+.vs-badge{display:inline-flex;align-items:center;gap:6px;background:#6366f120;border:1px solid #6366f140;border-radius:20px;padding:5px 14px;font-size:11px;font-weight:700;color:var(--accent);margin-bottom:20px;text-transform:uppercase;letter-spacing:.5px}
+h1{font-size:clamp(28px,4vw,44px);font-weight:800;color:#f8fafc;line-height:1.1;letter-spacing:-1.5px;margin-bottom:14px}
+h1 span{background:linear-gradient(135deg,#6366f1,#a5b4fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.sub{font-size:16px;color:var(--dim);margin-bottom:48px;line-height:1.6;max-width:640px}
+
+/* TOOL CARDS */
+.tool-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:56px}
+.tool-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:20px;transition:border-color .2s}
+.tool-card.us{border-color:#6366f155;background:linear-gradient(135deg,#1e2040,#1a1d2e)}
+.tool-card-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin-bottom:10px}
+.tool-card.us .tool-card-badge{color:var(--accent)}
+.tool-card-name{font-size:17px;font-weight:800;color:#f8fafc;margin-bottom:3px}
+.tool-card-desc{font-size:12px;color:var(--dim);margin-bottom:14px;line-height:1.4}
+.tool-card-price{font-size:20px;font-weight:800;color:var(--accent)}
+.tool-card-price-note{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.4}
+.best-badge{display:inline-flex;align-items:center;gap:4px;background:#4ade8022;border:1px solid #4ade8033;border-radius:20px;padding:3px 9px;font-size:10px;font-weight:700;color:var(--green);margin-top:10px}
+
+/* BIG COMPARISON TABLE */
+.table-wrap{overflow-x:auto;margin-bottom:56px;border-radius:14px;border:1px solid var(--border)}
+.comp-table{width:100%;border-collapse:collapse;min-width:640px}
+.comp-table thead{background:#13151f}
+.comp-table th{padding:14px 16px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);text-align:center;border-bottom:1px solid var(--border)}
+.comp-table th:first-child{text-align:left;width:200px}
+.comp-table th.us{color:var(--accent);background:#1e204044}
+.comp-table td{padding:13px 16px;font-size:13px;color:var(--dim);text-align:center;border-bottom:1px solid #1a1d2e;vertical-align:middle}
+.comp-table td:first-child{text-align:left;font-weight:600;color:var(--text);font-size:13px}
+.comp-table tr:last-child td{border-bottom:none}
+.comp-table tr:hover td{background:#ffffff03}
+.comp-table td.us{background:#6366f106}
+.y{color:var(--green);font-size:16px}
+.n{color:var(--red);font-size:16px}
+.p{color:var(--yellow);font-size:12px;font-weight:700}
+.note{font-size:11px;color:var(--muted);display:block;margin-top:2px}
+.price-cell{font-weight:700;color:#f8fafc}
+.cat-row td{background:#0d0f18;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:8px 16px;border-bottom:1px solid var(--border)}
+.cat-row td:first-child{color:var(--muted)}
+
+/* VERDICT GRID */
+h2{font-size:24px;font-weight:800;color:#f8fafc;letter-spacing:-.5px;margin-bottom:8px}
+.section-sub{font-size:14px;color:var(--dim);margin-bottom:28px;line-height:1.6}
+.verdict-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin-bottom:56px}
+.verdict-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:24px}
+.verdict-card.winner{border-color:#6366f155;background:linear-gradient(135deg,#1e2040,#1a1d2e)}
+.verdict-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.verdict-card.winner .verdict-label{color:var(--accent)}
+.verdict-card:not(.winner) .verdict-label{color:var(--muted)}
+.verdict-title{font-size:16px;font-weight:700;color:#f8fafc;margin-bottom:8px}
+.verdict-desc{font-size:13px;color:var(--dim);line-height:1.65}
+
+/* CTA */
+.cta-block{background:linear-gradient(135deg,#1a1d2e,#1e2235);border:1px solid var(--border);border-radius:20px;padding:48px;text-align:center;position:relative;overflow:hidden}
+.cta-block::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,#6366f122,transparent 70%);pointer-events:none}
+.cta-block h2{font-size:28px;letter-spacing:-1px;margin-bottom:10px}
+.cta-block p{font-size:14px;color:var(--dim);margin-bottom:28px;line-height:1.6}
+.btn-primary{display:inline-flex;align-items:center;gap:8px;background:var(--accent);color:#fff;border-radius:9px;padding:13px 26px;font-size:15px;font-weight:700;text-decoration:none;transition:all .2s;box-shadow:0 0 40px #6366f144}
+.btn-primary:hover{opacity:.9;transform:translateY(-1px);text-decoration:none}
+
+/* DEEP DIVE LINKS */
+.deep-dive{margin-top:48px}
+.deep-dive-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);margin-bottom:14px}
+.deep-links{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.deep-link{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px;text-decoration:none;transition:border-color .15s}
+.deep-link:hover{border-color:var(--accent);text-decoration:none}
+.deep-link-title{font-size:13px;font-weight:700;color:#f8fafc;margin-bottom:4px}
+.deep-link-sub{font-size:11px;color:var(--muted)}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:56px 48px 32px;margin-top:0}
+.footer-inner{max-width:1040px;margin:0 auto}
+.footer-top{display:grid;grid-template-columns:1.8fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px}
+.footer-brand{}
+.footer-logo{display:flex;align-items:center;gap:9px;text-decoration:none;margin-bottom:12px}
+.footer-logo svg{width:26px;height:26px;flex-shrink:0}
+.footer-logo-text{font-size:14px;font-weight:700;color:#f8fafc}
+.footer-logo-text span{color:var(--accent)}
+.footer-tagline{font-size:13px;color:var(--muted);line-height:1.6;max-width:220px;margin-bottom:16px}
+.footer-lh{font-size:12px;color:var(--muted)}
+.footer-lh a{color:var(--accent);text-decoration:none}
+.footer-lh a:hover{text-decoration:underline}
+.footer-col-title{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--dim);margin-bottom:14px}
+.footer-col a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:9px;transition:color .15s}
+.footer-col a:hover{color:var(--text)}
+.footer-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:24px;border-top:1px solid var(--border);flex-wrap:wrap;gap:12px}
+.footer-copy{font-size:12px;color:var(--muted)}
+.footer-bottom-links{display:flex;gap:20px}
+.footer-bottom-links a{font-size:12px;color:var(--muted);text-decoration:none}
+.footer-bottom-links a:hover{color:var(--text)}
+
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+
+@media(max-width:900px){
+  .tool-cards{grid-template-columns:repeat(2,1fr)}
+  .verdict-grid{grid-template-columns:1fr}
+  .deep-links{grid-template-columns:1fr}
+  .footer-top{grid-template-columns:1fr 1fr}
+  .footer-top .footer-brand{grid-column:1/-1}
+}
+@media(max-width:640px){
+  nav{padding:0 20px}
+  .wrap{padding:90px 20px 60px}
+  .tool-cards{grid-template-columns:1fr}
+  footer{padding:48px 20px 28px}
+  .footer-top{grid-template-columns:1fr}
+  .footer-top .footer-brand{grid-column:auto}
+  .cta-block{padding:32px 24px}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="/">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <rect width="32" height="32" rx="8" fill="#6366f1"/>
+      <rect x="5" y="20" width="5" height="8" rx="1.5" fill="white"/>
+      <rect x="13.5" y="13" width="5" height="15" rx="1.5" fill="white"/>
+      <rect x="22" y="7" width="5" height="21" rx="1.5" fill="white"/>
+    </svg>
+    <span class="nav-logo-text">Analytics<span>Dash</span></span>
+  </a>
+  <div class="nav-right">
+    <a class="nav-back" href="/">← Home</a>
+    <a class="btn-nav" href="/auth/login">Get started free</a>
+  </div>
+</nav>
+
+<main class="wrap" role="main">
+
+  <div class="vs-badge">Full Comparison</div>
+  <h1>AnalyticsDash vs <span>Every Alternative</span></h1>
+  <p class="sub">One table. Four tools. See exactly how AnalyticsDash stacks up against Amplitude, Plausible, and Umami on pricing, features, GA4 integration, SEO data, and more.</p>
+
+  <!-- TOOL CARDS -->
+  <div class="tool-cards">
+    <div class="tool-card us">
+      <div class="tool-card-badge">⭐ Our pick</div>
+      <div class="tool-card-name">AnalyticsDash</div>
+      <div class="tool-card-desc">GA4 + Search Console dashboard with a CLI</div>
+      <div class="tool-card-price">Free</div>
+      <div class="tool-card-price-note">Sign in with Google. No setup.</div>
+      <div class="best-badge">✓ Best for site owners</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-badge">Product analytics</div>
+      <div class="tool-card-name">Amplitude</div>
+      <div class="tool-card-desc">Event &amp; user journey analytics for app teams</div>
+      <div class="tool-card-price">$49+/mo</div>
+      <div class="tool-card-price-note">Starter free (10K MTUs) · Growth custom</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-badge">Privacy-first</div>
+      <div class="tool-card-name">Plausible</div>
+      <div class="tool-card-desc">Cookieless, GDPR-friendly web analytics</div>
+      <div class="tool-card-price">$9/mo</div>
+      <div class="tool-card-price-note">Starter · Growth $14 · Business $19 · Self-host free</div>
+    </div>
+    <div class="tool-card">
+      <div class="tool-card-badge">Open source</div>
+      <div class="tool-card-name">Umami</div>
+      <div class="tool-card-desc">Self-hosted open-source analytics</div>
+      <div class="tool-card-price">Free</div>
+      <div class="tool-card-price-note">Self-host free · Cloud Hobby free (10K) · Basic $9/mo</div>
+    </div>
+  </div>
+
+  <!-- COMPARISON TABLE -->
+  <div class="table-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Feature</th>
+          <th class="us">AnalyticsDash</th>
+          <th>Amplitude</th>
+          <th>Plausible</th>
+          <th>Umami</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- PRICING -->
+        <tr class="cat-row"><td colspan="5">Pricing</td></tr>
+        <tr>
+          <td>Starting price</td>
+          <td class="us"><span class="price-cell" style="color:var(--green)">Free</span></td>
+          <td><span class="price-cell">Free / $49+/mo</span><span class="note">10K MTU free tier</span></td>
+          <td><span class="price-cell">$9/mo</span><span class="note">30-day free trial</span></td>
+          <td><span class="price-cell">Free</span><span class="note">Self-host · Cloud from $9/mo</span></td>
+        </tr>
+        <tr>
+          <td>Free plan</td>
+          <td class="us"><span class="y">✓</span><span class="note">Always free, no limits</span></td>
+          <td><span class="p">Limited</span><span class="note">10K MTUs/mo, then paid</span></td>
+          <td><span class="p">Trial only</span><span class="note">30 days, then $9+/mo</span></td>
+          <td><span class="p">Self-host only</span><span class="note">Cloud Hobby: 10K events/mo</span></td>
+        </tr>
+
+        <!-- DATA SOURCE -->
+        <tr class="cat-row"><td colspan="5">Data &amp; integrations</td></tr>
+        <tr>
+          <td>Uses existing GA4 data</td>
+          <td class="us"><span class="y">✓</span><span class="note">No re-instrumentation</span></td>
+          <td><span class="n">✗</span><span class="note">Requires new SDK setup</span></td>
+          <td><span class="n">✗</span><span class="note">Installs its own tracker</span></td>
+          <td><span class="n">✗</span><span class="note">Installs its own tracker</span></td>
+        </tr>
+        <tr>
+          <td>Google Search Console</td>
+          <td class="us"><span class="y">✓</span><span class="note">Keywords, impressions, CTR</span></td>
+          <td><span class="n">✗</span></td>
+          <td><span class="n">✗</span></td>
+          <td><span class="n">✗</span></td>
+        </tr>
+        <tr>
+          <td>Historical data on day 1</td>
+          <td class="us"><span class="y">✓</span><span class="note">Your full GA4 history</span></td>
+          <td><span class="p">Partial</span><span class="note">Only from SDK install date</span></td>
+          <td><span class="n">✗</span><span class="note">Only from script install date</span></td>
+          <td><span class="n">✗</span><span class="note">Only from script install date</span></td>
+        </tr>
+        <tr>
+          <td>Real-time visitors</td>
+          <td class="us"><span class="y">✓</span></td>
+          <td><span class="y">✓</span></td>
+          <td><span class="y">✓</span></td>
+          <td><span class="y">✓</span></td>
+        </tr>
+        <tr>
+          <td>Top pages &amp; referrers</td>
+          <td class="us"><span class="y">✓</span></td>
+          <td><span class="p">Partial</span><span class="note">Event-focused, not pageview-first</span></td>
+          <td><span class="y">✓</span></td>
+          <td><span class="y">✓</span></td>
+        </tr>
+
+        <!-- FEATURES -->
+        <tr class="cat-row"><td colspan="5">Features</td></tr>
+        <tr>
+          <td>CLI / terminal access</td>
+          <td class="us"><span class="y">✓</span><span class="note">npm install analytics-dash</span></td>
+          <td><span class="n">✗</span></td>
+          <td><span class="n">✗</span></td>
+          <td><span class="n">✗</span></td>
+        </tr>
+        <tr>
+          <td>Works inside Claude Code / AI</td>
+          <td class="us"><span class="y">✓</span></td>
+          <td><span class="n">✗</span></td>
+          <td><span class="n">✗</span></td>
+          <td><span class="n">✗</span></td>
+        </tr>
+        <tr>
+          <td>Funnel &amp; retention analysis</td>
+          <td class="us"><span class="n">✗</span></td>
+          <td><span class="y">✓</span><span class="note">Core feature</span></td>
+          <td><span class="n">✗</span></td>
+          <td><span class="p">Basic</span></td>
+        </tr>
+        <tr>
+          <td>A/B testing</td>
+          <td class="us"><span class="n">✗</span></td>
+          <td><span class="y">✓</span><span class="note">Amplitude Experiment</span></td>
+          <td><span class="n">✗</span></td>
+          <td><span class="n">✗</span></td>
+        </tr>
+        <tr>
+          <td>Multi-site support</td>
+          <td class="us"><span class="y">✓</span></td>
+          <td><span class="y">✓</span></td>
+          <td><span class="y">✓</span></td>
+          <td><span class="y">✓</span></td>
+        </tr>
+
+        <!-- PRIVACY & INFRA -->
+        <tr class="cat-row"><td colspan="5">Privacy &amp; infrastructure</td></tr>
+        <tr>
+          <td>Cookieless tracking</td>
+          <td class="us"><span class="p">Via GA4</span><span class="note">GA4 supports consent mode</span></td>
+          <td><span class="n">✗</span><span class="note">Uses cookies by default</span></td>
+          <td><span class="y">✓</span><span class="note">No cookies, no banner needed</span></td>
+          <td><span class="y">✓</span><span class="note">No cookies by default</span></td>
+        </tr>
+        <tr>
+          <td>Self-hosted option</td>
+          <td class="us"><span class="n">✗</span><span class="note">Hosted service</span></td>
+          <td><span class="n">✗</span><span class="note">Cloud only</span></td>
+          <td><span class="y">✓</span><span class="note">Open-source, free to self-host</span></td>
+          <td><span class="y">✓</span><span class="note">MIT licensed</span></td>
+        </tr>
+        <tr>
+          <td>Server / DB required</td>
+          <td class="us"><span class="y">✗</span><span class="note" style="color:var(--green)">Nothing to manage</span></td>
+          <td><span class="y">✗</span><span class="note" style="color:var(--green)">Cloud only</span></td>
+          <td><span class="p">If self-hosting</span><span class="note">Cloud available</span></td>
+          <td><span class="n">✓</span><span class="note">Node.js + PostgreSQL/MySQL</span></td>
+        </tr>
+
+        <!-- SETUP -->
+        <tr class="cat-row"><td colspan="5">Setup &amp; audience</td></tr>
+        <tr>
+          <td>Setup time</td>
+          <td class="us" style="color:var(--green);font-weight:700">~2 min</td>
+          <td>Days–weeks<span class="note">Custom event instrumentation</span></td>
+          <td>~15 min<span class="note">Add script tag, wait for data</span></td>
+          <td>1–3 hrs<span class="note">Deploy server + DB + script tag</span></td>
+        </tr>
+        <tr>
+          <td>Best for</td>
+          <td class="us">Site owners, bloggers, devs</td>
+          <td>Product managers, app teams</td>
+          <td>Privacy-conscious site owners</td>
+          <td>Developers, self-hosters</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- VERDICT -->
+  <h2>Which tool should you pick?</h2>
+  <p class="section-sub">The right tool depends entirely on what you're trying to measure — and how much time you want to spend setting it up.</p>
+
+  <div class="verdict-grid">
+    <div class="verdict-card winner">
+      <div class="verdict-label">✓ Choose AnalyticsDash if...</div>
+      <div class="verdict-title">You already have GA4 and want more from it</div>
+      <div class="verdict-desc">You run a website, blog, or content business. You already have GA4 installed and just want a faster, cleaner view — plus Search Console keyword rankings and a terminal CLI. Setup takes two minutes and costs nothing.</div>
+    </div>
+    <div class="verdict-card">
+      <div class="verdict-label">Choose Amplitude if...</div>
+      <div class="verdict-title">You're building a product and need user journey analytics</div>
+      <div class="verdict-desc">You have a SaaS app or mobile product and need funnels, cohort retention, A/B testing, and deep user-event analysis. You have engineers who can instrument custom events. Budget and setup time are not constraints.</div>
+    </div>
+    <div class="verdict-card">
+      <div class="verdict-label">Choose Plausible if...</div>
+      <div class="verdict-title">Privacy is your top priority and you want to leave GA4</div>
+      <div class="verdict-desc">You want to drop GA4 entirely, avoid cookie consent banners, and run a lightweight GDPR-compliant tracker. You're comfortable starting fresh with no historical data. $9/month is fine.</div>
+    </div>
+    <div class="verdict-card">
+      <div class="verdict-label">Choose Umami if...</div>
+      <div class="verdict-title">You want full data ownership and love self-hosting</div>
+      <div class="verdict-desc">You're a developer who wants complete control over your data with no third-party involved. You're comfortable running a Node.js + database stack. You want open-source and don't mind managing your own infrastructure.</div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-block">
+    <h2>Start with AnalyticsDash — free, forever</h2>
+    <p>Connect your GA4 and Search Console in two minutes. No credit card, no setup, no new tracking scripts.</p>
+    <a class="btn-primary" href="/auth/login">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Get started free
+    </a>
+  </div>
+
+  <!-- DEEP DIVE LINKS -->
+  <div class="deep-dive">
+    <div class="deep-dive-label">Read the full comparisons</div>
+    <div class="deep-links">
+      <a class="deep-link" href="/vs/amplitude">
+        <div class="deep-link-title">AnalyticsDash vs Amplitude →</div>
+        <div class="deep-link-sub">Product analytics vs website analytics</div>
+      </a>
+      <a class="deep-link" href="/vs/plausible">
+        <div class="deep-link-title">AnalyticsDash vs Plausible →</div>
+        <div class="deep-link-sub">Privacy-first tracker vs GA4 dashboard</div>
+      </a>
+      <a class="deep-link" href="/vs/umami">
+        <div class="deep-link-title">AnalyticsDash vs Umami →</div>
+        <div class="deep-link-sub">Self-hosted open-source vs hosted service</div>
+      </a>
+    </div>
+  </div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="footer-logo" href="/">
+          <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+            <rect width="32" height="32" rx="8" fill="#6366f1"/>
+            <rect x="5" y="20" width="5" height="8" rx="1.5" fill="white"/>
+            <rect x="13.5" y="13" width="5" height="15" rx="1.5" fill="white"/>
+            <rect x="22" y="7" width="5" height="21" rx="1.5" fill="white"/>
+          </svg>
+          <span class="footer-logo-text">Analytics<span>Dash</span></span>
+        </a>
+        <p class="footer-tagline">The best dashboard for GA4 and Search Console — plus a CLI for developers.</p>
+        <div class="footer-lh">A <a href="https://lighthouselaunch.com" target="_blank">Lighthouse Launch</a> tool</div>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Product</div>
+        <a href="/auth/login">Sign in</a>
+        <a href="/#features">Features</a>
+        <a href="/#cli">CLI tool</a>
+        <a href="/#how">How it works</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Compare</div>
+        <a href="/vs">Compare all</a>
+        <a href="/vs/amplitude">vs Amplitude</a>
+        <a href="/vs/plausible">vs Plausible</a>
+        <a href="/vs/umami">vs Umami</a>
+      </div>
+      <div class="footer-col">
+        <div class="footer-col-title">Resources</div>
+        <a href="/articles/connect-google-analytics-4">GA4 Setup Guide</a>
+        <a href="/articles/connect-google-search-console">GSC Setup Guide</a>
+        <a href="https://www.npmjs.com/package/analytics-dash" target="_blank">npm package</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2026 AnalyticsDash. All rights reserved.</div>
+      <div class="footer-bottom-links">
+        <a href="/auth/login">Sign in</a>
+        <a href="https://lighthouselaunch.com" target="_blank">Lighthouse Launch</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

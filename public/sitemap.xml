@@ -16,6 +16,11 @@
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://analyticsdash.lighthouselaunch.com/vs</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
     <loc>https://analyticsdash.lighthouselaunch.com/vs/amplitude</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
