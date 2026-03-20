@@ -41,6 +41,14 @@ app.get('/articles/:slug', (req, res) => {
   });
 });
 
+// Comparison pages
+app.get('/vs/:slug', (req, res) => {
+  const slug = req.params.slug.replace(/[^a-z0-9-]/g, '');
+  res.sendFile(path.join(__dirname, 'public', 'vs', slug + '.html'), (err) => {
+    if (err) res.status(404).send('Page not found');
+  });
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(session({
