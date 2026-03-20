@@ -1,0 +1,8 @@
+# Server files — not needed for the CLI package
+server.js
+railway.json
+public/
+.env
+.env.*
+.claude/
+node_modules/
