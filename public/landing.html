@@ -5,13 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Primary Meta -->
-<title>AnalyticsDash — Your Complete Analytics Command Center</title>
-<meta name="description" content="One dashboard for all your website analytics. Google Analytics 4, Search Console, real-time traffic, SEO insights, and smart recommendations — all in one place.">
+<title>AnalyticsDash — The Best Analytics Command Center</title>
+<meta name="description" content="The best dashboard for your website analytics. GA4, Search Console, real-time traffic, SEO insights, and a CLI that plugs directly into AI tools like Claude Code.">
 <meta name="author" content="AnalyticsDash">
 <meta name="robots" content="index, follow">
 
 <!-- Canonical -->
 <link rel="canonical" href="https://analyticsdash.lighthouselaunch.com">
+<link rel="sitemap" type="application/xml" href="/sitemap.xml">
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-C5SDYM0PP8"></script>
@@ -25,8 +26,8 @@
 <!-- Open Graph (Facebook, LinkedIn, iMessage, Slack) -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://analyticsdash.lighthouselaunch.com">
-<meta property="og:title" content="AnalyticsDash — Your Complete Analytics Command Center">
-<meta property="og:description" content="One dashboard for all your website analytics. GA4, Search Console, real-time traffic, SEO quick wins, and smart recommendations — all in one dark, beautiful interface.">
+<meta property="og:title" content="AnalyticsDash — The Best Analytics Command Center">
+<meta property="og:description" content="The best dashboard for your website analytics. GA4, Search Console, real-time traffic, SEO quick wins, and a CLI that plugs directly into AI tools like Claude Code.">
 <meta property="og:image" content="https://analyticsdash.lighthouselaunch.com/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -35,13 +36,58 @@
 <!-- Twitter Card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:url" content="https://analyticsdash.lighthouselaunch.com">
-<meta name="twitter:title" content="AnalyticsDash — Your Complete Analytics Command Center">
-<meta name="twitter:description" content="One dashboard for all your website analytics. GA4, Search Console, real-time traffic, SEO quick wins, and smart recommendations.">
+<meta name="twitter:title" content="AnalyticsDash — The Best Analytics Command Center">
+<meta name="twitter:description" content="The best dashboard for your website analytics. GA4, Search Console, real-time traffic, SEO quick wins, and a CLI that plugs directly into AI tools like Claude Code.">
 <meta name="twitter:image" content="https://analyticsdash.lighthouselaunch.com/og-image.png">
+
+<!-- og:locale -->
+<meta property="og:locale" content="en_US">
+
+<!-- Preconnect hints -->
+<link rel="preconnect" href="https://www.googletagmanager.com">
+<link rel="dns-prefetch" href="https://www.googletagmanager.com">
+<link rel="preconnect" href="https://app.humblytics.com">
+<link rel="dns-prefetch" href="https://app.humblytics.com">
 
 <!-- Start Humblytics Tracking Code -->
 <script async src="https://app.humblytics.com/hmbl.min.js?id=09550ea"></script>
 <!-- End Humblytics Tracking Code -->
+
+<!-- JSON-LD Schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "AnalyticsDash",
+      "description": "The best dashboard for your website analytics. GA4, Search Console, real-time traffic, SEO insights, and a CLI that plugs directly into AI tools like Claude Code.",
+      "url": "https://analyticsdash.lighthouselaunch.com",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Web, macOS, Windows, Linux",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "screenshot": "https://analyticsdash.lighthouselaunch.com/og-image.png",
+      "featureList": [
+        "Google Analytics 4 dashboard",
+        "Google Search Console integration",
+        "Real-time visitor tracking",
+        "SEO quick wins",
+        "Terminal CLI for AI tools"
+      ]
+    },
+    {
+      "@type": "Organization",
+      "name": "AnalyticsDash",
+      "url": "https://analyticsdash.lighthouselaunch.com",
+      "logo": "https://analyticsdash.lighthouselaunch.com/favicon.png"
+    }
+  ]
+}
+</script>
 
 <!-- Favicon -->
 <link rel="icon" type="image/svg+xml" href="/favicon.svg">
@@ -249,7 +295,7 @@ footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-i
 <body>
 
 <!-- ── NAV ── -->
-<nav>
+<nav role="navigation" aria-label="Main navigation">
   <a class="nav-logo" href="/">
     <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
       <rect width="32" height="32" rx="8" fill="#6366f1"/>
@@ -264,8 +310,11 @@ footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-i
   </div>
 </nav>
 
+<!-- ── MAIN CONTENT ── -->
+<main role="main">
+
 <!-- ── HERO ── -->
-<section class="hero">
+<section class="hero" aria-label="Hero">
   <div class="hero-badge">
     <div class="hero-badge-dot"></div>
     Powered by GA4 + Google Search Console
@@ -627,8 +676,10 @@ footer{border-top:1px solid var(--border);padding:28px 48px;display:flex;align-i
   </div>
 </div>
 
+</main><!-- end main -->
+
 <!-- ── FOOTER ── -->
-<footer>
+<footer role="contentinfo">
   <a class="footer-logo" href="/">
     <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px">
       <rect width="32" height="32" rx="8" fill="#6366f1"/>
